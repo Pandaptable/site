@@ -1,0 +1,577 @@
+---
+import { Image } from "astro:assets";
+import AvatarImage from "../assets/avatar.png";
+import Card from "../components/card.astro";
+const bday = new Date("2006-02-17");
+const nowEST = new Date(
+	new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
+);
+let calculated_age = nowEST.getFullYear() - bday.getFullYear();
+const m = nowEST.getMonth() - bday.getMonth();
+if (m < 0 || (m === 0 && nowEST.getDate() < bday.getDate())) {
+	calculated_age--;
+}
+---
+
+<Card
+	class="row-span-2 col-span-2 flex flex-col items-center justify-center text-center"
+>
+	<div class="profile-avatar-wrapper">
+		<Image
+			src
+			src={AvatarImage}
+			alt="pfp"
+			class="w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full mb-3 sm:mb-4"
+			loading="eager"
+		/>
+		<span class="discord-color-dot"></span>
+	</div>
+	<h1 class="text-ctp-text text-xl sm:text-2xl font-bold mb-1">nemmy</h1>
+	<span
+		class="bg-ctp-mauve-500 text-xs sm:text-sm text-ctp-base font-black px-2 py-1 rounded-full mb-3 sm:mb-4"
+		>she/her</span
+	>
+	<p class="text-xs sm:text-sm font-bold text-ctp-subtext1">
+		{calculated_age} y/o cat raccoon panda thing...
+	</p>
+
+	<div class="discord-rpc" style="display: none;">
+		<button
+			class="discord-nav discord-nav-left"
+			style="display: none;"
+			aria-label="Previous activity"
+		>
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				width="14"
+				height="14"
+			>
+				<polyline points="15 18 9 12 15 6"></polyline>
+			</svg>
+		</button>
+		<button
+			class="discord-nav discord-nav-right"
+			style="display: none;"
+			aria-label="Next activity"
+		>
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				width="14"
+				height="14"
+			>
+				<polyline points="9 6 15 12 9 18"></polyline>
+			</svg>
+		</button>
+		<div class="discord-rpc-content">
+			<div class="discord-rpc-images">
+				<svg
+					class="discord-image-container"
+					viewBox="0 0 160 160"
+					width="80"
+					height="80"
+				>
+					<defs>
+						<mask id="mask-large-image">
+							<rect
+								fill="white"
+								x="0"
+								y="0"
+								width="160"
+								height="160"
+								rx="16"></rect>
+							<circle fill="black" cx="132" cy="132" r="34"
+							></circle>
+						</mask>
+					</defs>
+					<foreignObject x="0" y="0" width="160" height="160" rx="16">
+						<div class="discord-large-image"></div>
+					</foreignObject>
+				</svg>
+				<div class="discord-small-image"></div>
+			</div>
+			<div class="discord-rpc-info">
+				<span class="discord-status-text"></span>
+				<span class="discord-activity"></span>
+				<span class="discord-details"></span>
+				<span class="discord-state"></span>
+				<span class="discord-timestamp"></span>
+			</div>
+		</div>
+		<div class="discord-progress" style="display: none;">
+			<div class="discord-progress-bar"></div>
+		</div>
+	</div>
+</Card>
+
+<script>
+	const DISCORD_USER_ID = "97153209843335168";
+	const ACTIVITY_TYPE = [
+		"Playing",
+		"Streaming to",
+		"Listening to",
+		"Watching",
+		"Custom status",
+		"Competing in",
+		"Hang Status",
+	];
+	const STATUS_COLOR: Record<string, string> = {
+		online: "#a6e3a1",
+		idle: "#f9e2af",
+		dnd: "#f38ba8",
+		offline: "#a6adc8",
+	};
+
+	let timestampInterval: ReturnType<typeof setInterval> | null = null;
+	let progressInterval: ReturnType<typeof setInterval> | null = null;
+	let cachedTimestamp = "";
+	let currentActivities: any[] = [];
+	let currentActivityIndex = 0;
+
+	function $(selector: string): HTMLElement | null {
+		return document.querySelector(selector);
+	}
+
+	function setText(selector: string, text: string | null | undefined) {
+		const el = $(selector);
+		if (el) el.textContent = text ?? "";
+	}
+
+	function setStyle(selector: string, style: string) {
+		const el = $(selector);
+		if (el) el.setAttribute("style", style);
+	}
+
+	function setAttr(selector: string, attr: string, value: string) {
+		const el = $(selector);
+		if (el) el.setAttribute(attr, value);
+	}
+
+	function setRpcTimestamp(start?: number, end?: number) {
+		const key = `${start} ${end}`;
+		if (cachedTimestamp === key) return;
+		cachedTimestamp = key;
+
+		if (timestampInterval) {
+			clearInterval(timestampInterval);
+			timestampInterval = null;
+		}
+
+		const el = $(".discord-timestamp");
+		if (!el) return;
+
+		if (!start && !end) {
+			el.textContent = "";
+			return;
+		}
+
+		function tick() {
+			if (!el) return;
+			const now = Date.now();
+			let diff: number;
+
+			if (end) {
+				diff = Math.max(0, end - now);
+			} else if (start) {
+				diff = now - start;
+			} else return;
+
+			const hrs = Math.floor(diff / 3600000);
+			const mins = Math.floor((diff % 3600000) / 60000);
+			const secs = Math.floor((diff % 60000) / 1000);
+
+			let text: string;
+			if (end) {
+				text =
+					hrs > 0
+						? `${hrs}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")} left`
+						: `${mins}:${String(secs).padStart(2, "0")} left`;
+			} else {
+				text =
+					hrs > 0
+						? `${hrs}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")} elapsed`
+						: `${mins}:${String(secs).padStart(2, "0")} elapsed`;
+			}
+
+			el.textContent = text;
+		}
+
+		tick();
+		timestampInterval = setInterval(tick, 1000);
+	}
+
+	function setProgress(activityType: number, start?: number, end?: number) {
+		const progressEl = $(".discord-progress") as HTMLElement | null;
+		const barEl = $(".discord-progress-bar") as HTMLElement | null;
+		if (!progressEl || !barEl) return;
+
+		if (progressInterval) {
+			clearInterval(progressInterval);
+			progressInterval = null;
+		}
+
+		const showProgress =
+			(activityType === 2 || activityType === 3) && start && end;
+
+		if (!showProgress) {
+			progressEl.style.display = "none";
+			return;
+		}
+
+		progressEl.style.display = "";
+
+		function updateBar() {
+			if (!barEl || !start || !end) return;
+			const now = Date.now();
+			const total = end - start;
+			const elapsed = now - start;
+			const pct = Math.min(100, Math.max(0, (elapsed / total) * 100));
+			barEl.style.width = `${pct}%`;
+		}
+
+		updateBar();
+		progressInterval = setInterval(updateBar, 1000);
+	}
+
+	function displayActivity(a: any) {
+		cachedTimestamp = "";
+
+		setText(".discord-status-text", ACTIVITY_TYPE[a.type] || "");
+
+		(["large", "small"] as const).forEach(async (s) => {
+			const size = s === "large" ? 160 : 60;
+			let imageUrl = a.assets?.[`${s}_image`];
+
+			if (!imageUrl) {
+				if (s === "large" && a.application_id) {
+					try {
+						const { icon } = await fetch(
+							`https://discord.com/api/v10/applications/${a.application_id}/rpc`,
+						).then((r) => r.json());
+						if (icon) {
+							setStyle(
+								`.discord-${s}-image`,
+								`background-image: url(https://cdn.discordapp.com/app-icons/${a.application_id}/${icon}.png?size=${size})`,
+							);
+							return;
+						}
+					} catch {}
+				}
+				setStyle(`.discord-${s}-image`, "");
+				setAttr(`.discord-${s}-image`, "title", "");
+				if (s === "small") {
+					const fo = $(".discord-image-container foreignObject");
+					if (fo) fo.removeAttribute("mask");
+				}
+				return;
+			}
+
+			if (imageUrl.startsWith("mp:"))
+				imageUrl = `https://media.discordapp.net/${imageUrl.slice(3)}?width=${size}&height=${size}`;
+			else if (imageUrl.startsWith("spotify:"))
+				imageUrl = `https://i.scdn.co/image/${imageUrl.slice(8)}`;
+			else
+				imageUrl = `https://cdn.discordapp.com/app-assets/${a.application_id}/${imageUrl}.png?size=${size}`;
+
+			setStyle(
+				`.discord-${s}-image`,
+				`background-image: url(${imageUrl})`,
+			);
+			setAttr(
+				`.discord-${s}-image`,
+				"title",
+				a.assets?.[`${s}_text`] || "",
+			);
+			if (s === "small") {
+				const fo = $(".discord-image-container foreignObject");
+				if (fo) fo.setAttribute("mask", "url(#mask-large-image)");
+			}
+		});
+
+		setText(".discord-activity", a.name);
+		setText(".discord-details", a.details);
+		setText(".discord-state", a.state);
+
+		setRpcTimestamp(a.timestamps?.start, a.timestamps?.end);
+		setProgress(a.type, a.timestamps?.start, a.timestamps?.end);
+	}
+
+	function updateNavArrows() {
+		const left = $(".discord-nav-left") as HTMLElement | null;
+		const right = $(".discord-nav-right") as HTMLElement | null;
+		if (!left || !right) return;
+
+		if (currentActivities.length <= 1) {
+			left.style.display = "none";
+			right.style.display = "none";
+		} else {
+			left.style.display = "";
+			right.style.display = "";
+		}
+	}
+
+	function updateLanyard(data: any) {
+		const { discord_user, discord_status, activities } = data;
+
+		setStyle(
+			".discord-color-dot",
+			`border-color: ${STATUS_COLOR[discord_status] || STATUS_COLOR.offline}`,
+		);
+
+		const filtered = (activities || []).filter(
+			(a: any) => a.type !== 4 && a.type !== 6,
+		);
+		const rpcEl = $(".discord-rpc");
+
+		if (!filtered.length) {
+			if (rpcEl) rpcEl.style.display = "none";
+			currentActivities = [];
+			currentActivityIndex = 0;
+			setRpcTimestamp();
+			setProgress(-1);
+			updateNavArrows();
+			return;
+		}
+
+		if (rpcEl) rpcEl.style.display = "";
+		currentActivities = filtered;
+
+		if (currentActivityIndex >= filtered.length) {
+			currentActivityIndex = 0;
+		}
+
+		updateNavArrows();
+		displayActivity(filtered[currentActivityIndex]);
+	}
+
+	function connectLanyard() {
+		const ws = new WebSocket("wss://api.lanyard.rest/socket");
+
+		ws.addEventListener("open", () =>
+			ws.send(
+				JSON.stringify({
+					op: 2,
+					d: { subscribe_to_id: DISCORD_USER_ID },
+				}),
+			),
+		);
+
+		ws.addEventListener("message", ({ data }) => {
+			const msg = JSON.parse(data);
+			if (msg.op === 1) {
+				setInterval(
+					() => ws.send(JSON.stringify({ op: 3 })),
+					msg.d.heartbeat_interval,
+				);
+			}
+			if (msg.t === "INIT_STATE" || msg.t === "PRESENCE_UPDATE") {
+				updateLanyard(msg.d);
+			}
+		});
+
+		ws.addEventListener("error", () => ws.close());
+		ws.addEventListener("close", () => setTimeout(connectLanyard, 1000));
+	}
+
+	$(".discord-nav-left")?.addEventListener("click", () => {
+		if (currentActivities.length <= 1) return;
+		currentActivityIndex =
+			(currentActivityIndex - 1 + currentActivities.length) %
+			currentActivities.length;
+		displayActivity(currentActivities[currentActivityIndex]);
+	});
+
+	$(".discord-nav-right")?.addEventListener("click", () => {
+		if (currentActivities.length <= 1) return;
+		currentActivityIndex =
+			(currentActivityIndex + 1) % currentActivities.length;
+		displayActivity(currentActivities[currentActivityIndex]);
+	});
+
+	connectLanyard();
+</script>
+
+<style is:global>
+	.profile-avatar-wrapper {
+		position: relative;
+		display: inline-block;
+	}
+
+	.discord-color-dot {
+		position: absolute;
+		inset: 0;
+		bottom: 0.75rem;
+		border-radius: 50%;
+		border: 3px solid #a6adc8;
+		pointer-events: none;
+		z-index: 1;
+		transition: border-color 0.3s ease;
+	}
+
+	@media (min-width: 640px) {
+		.discord-color-dot {
+			bottom: 1rem;
+		}
+	}
+
+	@media (min-width: 768px) {
+		.discord-color-dot {
+			bottom: 1rem;
+		}
+	}
+
+	.discord-rpc {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		border-radius: 0.75rem;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid var(--color-ctp-surface0);
+		margin-top: 0.75rem;
+		width: 100%;
+		text-align: left;
+	}
+
+	.discord-nav {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 2;
+		background: var(--color-ctp-surface0);
+		border: 1px solid var(--color-ctp-surface1);
+		color: var(--color-ctp-subtext0);
+		border-radius: 50%;
+		width: 1.5rem;
+		height: 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		padding: 0;
+		transition: all 0.15s ease;
+		opacity: 0;
+	}
+
+	.discord-rpc:hover .discord-nav {
+		opacity: 1;
+	}
+
+	.discord-nav:hover {
+		background: var(--color-ctp-surface1);
+		color: var(--color-ctp-mauve);
+		border-color: var(--color-ctp-mauve);
+	}
+
+	.discord-nav-left {
+		left: -0.5rem;
+	}
+
+	.discord-nav-right {
+		right: -0.5rem;
+	}
+
+	.discord-rpc-content {
+		display: flex;
+		gap: 0.75rem;
+		padding: 0.625rem;
+	}
+
+	.discord-progress {
+		width: 100%;
+		height: 4px;
+		background: var(--color-ctp-surface0);
+		border-radius: 0 0 0.75rem 0.75rem;
+		overflow: hidden;
+	}
+
+	.discord-progress-bar {
+		height: 100%;
+		width: 0%;
+		background: var(--color-ctp-mauve);
+		border-radius: 0 2px 2px 0;
+		transition: width 1s linear;
+	}
+
+	.discord-rpc-images {
+		position: relative;
+		width: 80px;
+		min-width: 80px;
+		height: 80px;
+	}
+
+	.discord-image-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.discord-large-image {
+		width: 100%;
+		height: 100%;
+		border-radius: 8px;
+		background-size: cover;
+		background-position: center;
+		background-color: var(--color-ctp-surface0);
+	}
+
+	.discord-small-image {
+		position: absolute;
+		bottom: -4px;
+		right: -4px;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background-size: cover;
+		background-position: center;
+		z-index: 1;
+	}
+
+	.discord-rpc-info {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.125rem;
+		min-width: 0;
+	}
+
+	.discord-status-text {
+		color: var(--color-ctp-subtext0);
+		font-size: 0.6875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.025em;
+		font-weight: 600;
+	}
+
+	.discord-activity {
+		color: var(--color-ctp-text);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.discord-details,
+	.discord-state {
+		color: var(--color-ctp-subtext1);
+		font-size: 0.75rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.discord-timestamp {
+		color: var(--color-ctp-subtext0);
+		font-size: 0.6875rem;
+		font-variant-numeric: tabular-nums;
+	}
+</style>

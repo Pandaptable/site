@@ -9,6 +9,17 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.17.1"
+    "@astrojs/mdx": "^4.3.13",
+    "@astrojs/sitemap": "^3.7.0",
+    "@gcpreston/slippi-viewer": "^0.1.16",
+    "@tailwindcss/vite": "^4.2.1",
+    "astro": "^5.17.1",
+    "astro-icon": "^1.1.5",
+    "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "@catppuccin/tailwindcss": "^1.0.0",
+    "@iconify-json/ic": "^1.2.4",
+    "@iconify-json/mdi": "^1.2.3"
   }
 }

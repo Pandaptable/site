@@ -1,11 +1,30 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import AniList from "../components/anilist.astro";
+import Bio from "../components/bio.astro";
+import Icons from "../components/icons.astro";
+import Profile from "../components/profile.astro";
+import Layout from "../layouts/layout.astro";
+import "../styles/global.css";
 ---
 
 <Layout>
-	<Welcome />
+	<main
+		class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 grid grid-cols-2 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-3 auto-rows-[minmax(100px,auto)]"
+	>
+		<Profile />
+		<Bio />
+		<AniList />
+		<Icons />
+		<!-- <Slippi />-->
+	</main>
+	<footer class="fixed bottom-4 right-4 z-50">
+		<a
+			href="https://github.com/Pandaptable/site"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="text-ctp-subtext0 hover:text-ctp-mauve transition-colors text-sm font-mono"
+		>
+			&lt;source code /&gt;
+		</a>
+	</footer>
 </Layout>

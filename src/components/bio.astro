@@ -1,0 +1,22 @@
+---
+import { Image } from "astro:assets";
+import Banner from "../assets/banner.png";
+import BioContent from "../components/bio.mdx";
+import Card from "../components/card.astro";
+---
+
+<Card title="Bio" class="row-span-2 col-span-2 md:col-span-6 text-ctp-text">
+	<div
+		class="prose prose-invert max-w-none text-ctp-text text-sm sm:text-base"
+	>
+		<BioContent />
+		<br />
+		<Image
+			src
+			src={Banner}
+			alt="banner"
+			class="rounded-xl sm:rounded-2xl w-full"
+			loading="eager"
+		/>
+	</div>
+</Card>

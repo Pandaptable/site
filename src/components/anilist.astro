@@ -1,0 +1,220 @@
+---
+import Card from "./card.astro";
+---
+
+<Card title="AniList" class="row-span-2 col-span-2 md:col-span-4">
+	<div class="anilist-grid" id="anilist-grid">
+		{Array.from({ length: 4 }).map(() => (
+			<div class="anilist-activity anilist-skeleton">
+				<div class="anilist-cover" />
+				<div class="anilist-info">
+					<span class="anilist-title skeleton-line" />
+					<span class="anilist-status skeleton-line short" />
+					<span class="anilist-time skeleton-line shorter" />
+				</div>
+			</div>
+		))}
+	</div>
+</Card>
+
+<script>
+	const ANILIST_USER_ID = 713317;
+
+	const TIME_UNITS: [string, number][] = [
+		["year", 31536000],
+		["month", 2592000],
+		["week", 604800],
+		["day", 86400],
+		["hour", 3600],
+		["minute", 60],
+		["second", 1],
+	];
+
+	function relativeTime(timestamp: number): string {
+		const diff = Math.floor(Date.now() / 1000) - timestamp;
+		for (const [unit, value] of TIME_UNITS) {
+			const amount = Math.floor(diff / value);
+			if (amount > 0) return `${amount} ${unit}${amount > 1 ? "s" : ""} ago`;
+		}
+		return "just now";
+	}
+
+	function formatStatus(activity: any): string {
+		const raw = `${activity.status}${activity.progress ? ` ${activity.progress}` : ""}`;
+		return raw.charAt(0).toUpperCase() + raw.slice(1);
+	}
+
+	async function loadAniList() {
+		const grid = document.getElementById("anilist-grid");
+		if (!grid) return;
+
+		const query = `query {
+			Page(page: 1, perPage: 4) {
+				activities(userId: ${ANILIST_USER_ID}, sort: ID_DESC) {
+					... on ListActivity {
+						createdAt
+						status
+						progress
+						media {
+							coverImage {
+								medium
+							}
+							title {
+								english
+								romaji
+							}
+							siteUrl
+						}
+					}
+				}
+			}
+		}`;
+
+		try {
+			const res = await fetch("https://graphql.anilist.co", {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ query }),
+			}).then((r) => r.json());
+
+			if (!res.data) return;
+
+			const activities = res.data.Page.activities.filter((a: any) => a.media);
+
+			grid.innerHTML = activities
+				.map(
+					(activity: any) => `
+				<a href="${activity.media.siteUrl}" target="_blank" rel="noopener noreferrer" class="anilist-activity">
+					<div class="anilist-cover" style="background-image: url(${activity.media.coverImage.medium})"></div>
+					<div class="anilist-info">
+						<span class="anilist-title">${activity.media.title.english || activity.media.title.romaji}</span>
+						<span class="anilist-status">${formatStatus(activity)}</span>
+						<time class="anilist-time"
+							data-timestamp="${activity.createdAt}"
+							datetime="${new Date(activity.createdAt * 1000).toISOString()}"
+							title="${new Date(activity.createdAt * 1000).toLocaleString()}">
+							${relativeTime(activity.createdAt)}
+						</time>
+					</div>
+				</a>`,
+				)
+				.join("");
+		} catch (e) {
+			console.error("Failed to fetch AniList data:", e);
+		}
+	}
+
+	function updateTimes() {
+		document
+			.querySelectorAll<HTMLTimeElement>(".anilist-time[data-timestamp]")
+			.forEach((el) => {
+				const timestamp = parseInt(el.dataset.timestamp || "0", 10);
+				el.textContent = relativeTime(timestamp);
+			});
+	}
+
+	loadAniList();
+	setInterval(updateTimes, 60000);
+</script>
+
+<style is:global>
+	.anilist-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.75rem;
+	}
+
+	@media (max-width: 640px) {
+		.anilist-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.anilist-activity {
+		display: flex;
+		gap: 0.75rem;
+		padding: 0.625rem;
+		border-radius: 0.75rem;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid transparent;
+		text-decoration: none;
+		transition: all 0.2s ease;
+	}
+
+	.anilist-activity:hover {
+		background: rgba(255, 255, 255, 0.06);
+		border-color: var(--color-ctp-mauve);
+	}
+
+	.anilist-cover {
+		width: 3.5rem;
+		height: 5rem;
+		min-width: 3.5rem;
+		border-radius: 0.5rem;
+		background-size: cover;
+		background-position: center;
+		background-color: var(--color-ctp-surface0);
+	}
+
+	.anilist-info {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.25rem;
+		min-width: 0;
+	}
+
+	.anilist-title {
+		color: var(--color-ctp-text);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		line-height: 1.3;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+
+	.anilist-status {
+		color: var(--color-ctp-mauve);
+		font-size: 0.75rem;
+		font-weight: 500;
+	}
+
+	.anilist-time {
+		color: var(--color-ctp-subtext0);
+		font-size: 0.6875rem;
+	}
+
+	/* Skeleton loading styles */
+	.anilist-skeleton {
+		pointer-events: none;
+	}
+
+	.skeleton-line {
+		display: block;
+		height: 0.75rem;
+		border-radius: 0.25rem;
+		background: var(--color-ctp-surface0);
+		animation: skeleton-pulse 1.5s ease-in-out infinite;
+	}
+
+	.skeleton-line.short {
+		width: 60%;
+	}
+
+	.skeleton-line.shorter {
+		width: 40%;
+	}
+
+	@keyframes skeleton-pulse {
+		0%,
+		100% {
+			opacity: 0.4;
+		}
+		50% {
+			opacity: 0.8;
+		}
+	}
+</style>

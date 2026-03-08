@@ -1,0 +1,28 @@
+---
+const { title = "mrrrp~", ...props } = Astro.props;
+const oembedUrl = new URL("/meow.json", Astro.url.origin);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<title>{title}</title>
+<meta name="description" content="mrrrrp~" />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://pandaptable.moe" />
+<meta property="og:site_name" content="pandaptable.moe" />
+<meta name="twitter:site" content="pandaptable.moe" />
+<meta property="og:description" content="mrrrrp~" />
+<meta name="twitter:description" content="mrrrrp~" />
+<meta property="og:image" content="/banner.png" />
+<meta property="og:image:alt" content="" />
+<meta name="twitter:card" content="player" />
+<meta name="twitter:player" content="/embed.mp4" />
+<meta name="twitter:player:stream" content="/embed.mp4" />
+<meta name="twitter:player:stream:content_type" content="video/mp4" />
+<link type="application/json+oembed" href={oembedUrl} />
+<meta name="theme-color" content="#cba6f7" />

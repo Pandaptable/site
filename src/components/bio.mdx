@@ -1,0 +1,24 @@
+export const bday = new Date("2006-02-17");
+export const nowEST = new Date(
+	new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
+);
+export const calculated_age = (() => {
+	let age = nowEST.getFullYear() - bday.getFullYear();
+	const m = nowEST.getMonth() - bday.getMonth();
+	if (m < 0 || (m === 0 && nowEST.getDate() < bday.getDate())) {
+		age--;
+	}
+	return age;
+})();
+
+
+
+Hi! I'm nemmy, a {calculated_age} y/o woman from bumfuck nowhere ohio.
+
+one of my biggest autism special interests is source engine... i'm sure you couldn't tell from the missing texture collar...
+
+i enjoy making really really shitty projects like <a href="https://github.com/Pandaptable/nembot" class="text-ctp-mauve hover:text-ctp-mauve/80 underline decoration-ctp-mauve/30 hover:decoration-ctp-mauve transition-colors">nembot</a> (shitty CS chatbot that doesn't touch game memory)
+
+Genuinely was my special interest for 2+ years straight
+
+outside of that feel free to add me anywhere and ask!
