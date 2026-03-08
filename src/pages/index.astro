@@ -1,6 +1,8 @@
 ---
 import AniList from "../components/anilist.astro";
 import Bio from "../components/bio.astro";
+import Buttons from "../components/buttons.astro";
+import Card from "../components/card.astro";
 import Icons from "../components/icons.astro";
 import Profile from "../components/profile.astro";
 import Layout from "../layouts/layout.astro";
@@ -15,6 +17,12 @@ import "../styles/global.css";
 		<Bio />
 		<AniList />
 		<Icons />
+		<Card
+			title="Buttons"
+			class="row-span-2 col-span-2 md:col-span-6 lg:col-span-8 text-ctp-text"
+		>
+			<Buttons />
+		</Card>
 		<!-- <Slippi />-->
 	</main>
 	<footer class="fixed bottom-4 right-4 z-50">

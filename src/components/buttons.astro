@@ -1,0 +1,38 @@
+<div class="flex flex-wrap gap-1" id="buttons-container">
+	<a href="https://pandaptable.moe"
+		><img src="/buttons/button.avif" width="88" height="31" /></a
+	>
+	<a href="https://riverr.ftp.sh/"
+		><img
+			src="https://riverr.ftp.sh/button.png"
+			width="88"
+			height="31"
+		/></a
+	>
+	<a href="https://panley.みんな"
+		><img src="/buttons/panley.png" width="88" height="31" /></a
+	>
+	<a href="https://estro.gay"
+		><img src="/buttons/lexi.png" width="88" height="31" /></a
+	>
+	<a href="https://azzie.gay"
+		><img src="/buttons/azzie.png" width="88" height="31" /></a
+	>
+	<a href="https://steamcommunity.com"
+		><img src="/buttons/steam.gif" width="88" height="31" /></a
+	>
+	<a><img src="/buttons/hellokitty.gif" width="88" height="31" /></a>
+	<a><img src="/buttons/newlambda.gif" width="88" height="31" /></a>
+</div>
+
+<script>
+	const container = document.getElementById("buttons-container");
+	if (container) {
+		const children = [...container.children];
+		for (let i = children.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[children[i], children[j]] = [children[j], children[i]];
+		}
+		children.forEach((child) => container.appendChild(child));
+	}
+</script>

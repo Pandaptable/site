@@ -2,18 +2,24 @@
 import Card from "./card.astro";
 ---
 
-<Card title="AniList" class="row-span-2 col-span-2 md:col-span-4">
+<Card
+	title="AniList"
+	href="https://anilist.co/user/Pandaptable/"
+	class="row-span-2 col-span-2 md:col-span-4"
+>
 	<div class="anilist-grid" id="anilist-grid">
-		{Array.from({ length: 4 }).map(() => (
-			<div class="anilist-activity anilist-skeleton">
-				<div class="anilist-cover" />
-				<div class="anilist-info">
-					<span class="anilist-title skeleton-line" />
-					<span class="anilist-status skeleton-line short" />
-					<span class="anilist-time skeleton-line shorter" />
+		{
+			Array.from({ length: 4 }).map(() => (
+				<div class="anilist-activity anilist-skeleton">
+					<div class="anilist-cover" />
+					<div class="anilist-info">
+						<span class="anilist-title skeleton-line" />
+						<span class="anilist-status skeleton-line short" />
+						<span class="anilist-time skeleton-line shorter" />
+					</div>
 				</div>
-			</div>
-		))}
+			))
+		}
 	</div>
 </Card>
 
@@ -34,7 +40,8 @@ import Card from "./card.astro";
 		const diff = Math.floor(Date.now() / 1000) - timestamp;
 		for (const [unit, value] of TIME_UNITS) {
 			const amount = Math.floor(diff / value);
-			if (amount > 0) return `${amount} ${unit}${amount > 1 ? "s" : ""} ago`;
+			if (amount > 0)
+				return `${amount} ${unit}${amount > 1 ? "s" : ""} ago`;
 		}
 		return "just now";
 	}
@@ -79,7 +86,9 @@ import Card from "./card.astro";
 
 			if (!res.data) return;
 
-			const activities = res.data.Page.activities.filter((a: any) => a.media);
+			const activities = res.data.Page.activities.filter(
+				(a: any) => a.media,
+			);
 
 			grid.innerHTML = activities
 				.map(
@@ -187,7 +196,6 @@ import Card from "./card.astro";
 		font-size: 0.6875rem;
 	}
 
-	/* Skeleton loading styles */
 	.anilist-skeleton {
 		pointer-events: none;
 	}
