@@ -14,4 +14,4 @@ COPY --from=base /app/dist ./dist
 COPY . ./
 
 EXPOSE 7911
-ENTRYPOINT ["uv", "run", "gunicorn --pythonpath /app/src main:app"]
+ENTRYPOINT ["uv", "run", "--with", "gunicorn", "gunicorn", "--pythonpath", "/app/src", "main:app"]
