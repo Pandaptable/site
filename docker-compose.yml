@@ -2,6 +2,8 @@ services:
   nemmy-site:
     build: .
     restart: unless-stopped
+    networks:
+      - caddy
 
 networks:
   caddy:
