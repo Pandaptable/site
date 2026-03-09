@@ -2,15 +2,6 @@
 import { Image } from "astro:assets";
 import AvatarImage from "../assets/avatar.png";
 import Card from "../components/card.astro";
-const bday = new Date("2006-02-17");
-const nowEST = new Date(
-	new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
-);
-let calculated_age = nowEST.getFullYear() - bday.getFullYear();
-const m = nowEST.getMonth() - bday.getMonth();
-if (m < 0 || (m === 0 && nowEST.getDate() < bday.getDate())) {
-	calculated_age--;
-}
 ---
 
 <Card
@@ -32,7 +23,7 @@ if (m < 0 || (m === 0 && nowEST.getDate() < bday.getDate())) {
 		>she/her</span
 	>
 	<p class="text-xs sm:text-sm font-bold text-ctp-subtext1">
-		{calculated_age} y/o cat raccoon panda thing...
+		%%AGE%% y/o cat raccoon panda thing...
 	</p>
 
 	<div class="discord-rpc" style="display: none;">

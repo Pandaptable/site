@@ -1,0 +1,14 @@
+[site]
+BASE_URL = ""
+PORT = 49999
+LOG_LEVEL = "INFO"
+BIRTHDAY = 2000-01-01
+
+[discord]
+TOKEN = ""
+OWNER_ID = 0
+CHANNEL_ID = ""
+MESSAGE_ID = ""
+
+[sentry]
+SENTRY_DSN = ""

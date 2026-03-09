@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "@catppuccin/tailwindcss/mocha.css";
 
+
+@theme {
+	--font-sans: "Figtree", sans-serif;
+}
+
 .missing-texture {
 	--checkerboard-size: 80px;
 	--checkerboard-color1: #ff00ff;

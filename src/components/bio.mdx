@@ -1,19 +1,4 @@
-export const bday = new Date("2006-02-17");
-export const nowEST = new Date(
-	new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
-);
-export const calculated_age = (() => {
-	let age = nowEST.getFullYear() - bday.getFullYear();
-	const m = nowEST.getMonth() - bday.getMonth();
-	if (m < 0 || (m === 0 && nowEST.getDate() < bday.getDate())) {
-		age--;
-	}
-	return age;
-})();
-
-
-
-Hi! I'm nemmy, a {calculated_age} y/o woman from bumfuck nowhere ohio.
+Hi! I'm nemmy, a %%AGE%% y/o woman from bumfuck nowhere ohio.
 
 one of my biggest autism special interests is source engine... i'm sure you couldn't tell from the missing texture collar...
 

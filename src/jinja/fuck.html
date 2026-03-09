@@ -1,0 +1,147 @@
+<meta id="fuck" content="fuck {{x}}" property="og:title" />
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta content="i hate {{x}}" property="og:description" />
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>fuck {{x}}</title>
+</head>
+<style>
+	@import url('https://api.fonts.coollabs.io/css2?family=Figtree:wght@300;400;500;600;700&display=swap');
+
+	* {
+		overflow: hidden;
+		font-family: 'Figtree', sans-serif;
+	}
+
+	#troll {
+		font-size: 70px;
+		width: fit-content;
+		color: #ff00ff;
+	}
+
+	body {
+		margin: 0;
+		width: 100%;
+		min-height: 100%;
+	}
+
+	.missing-texture {
+		--checkerboard-size: 80px;
+		--checkerboard-color1: #ff00ff;
+		--checkerboard-color2: #000000;
+		--scroll-speed: 2s;
+
+		position: relative;
+		background: black;
+
+		isolation: isolate;
+	}
+
+	.missing-texture::before {
+		content: "";
+		position: fixed;
+		top: calc(-1 * var(--checkerboard-size));
+		left: calc(-1 * var(--checkerboard-size));
+		width: calc(100vw + (var(--checkerboard-size) * 2));
+		height: calc(100vh + (var(--checkerboard-size) * 2));
+
+		z-index: -2;
+
+		background-image: conic-gradient(var(--checkerboard-color1) 25%,
+				var(--checkerboard-color2) 25% 50%,
+				var(--checkerboard-color1) 50% 75%,
+				var(--checkerboard-color2) 75%);
+		background-size: var(--checkerboard-size) var(--checkerboard-size);
+
+		animation: scroll var(--scroll-speed) linear infinite;
+	}
+
+	.missing-texture::after {
+		content: "";
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+
+		z-index: -1;
+
+		background:
+			repeating-linear-gradient(0deg,
+				transparent 0px,
+				transparent 2px,
+				rgba(0, 0, 0, 0.4) 2px,
+				rgba(0, 0, 0, 0.4) 4px),
+			radial-gradient(circle at center,
+				rgba(0, 0, 0, 0.55) 0%,
+				rgba(0, 0, 0, 0.95) 100%);
+	}
+
+	@keyframes scroll {
+		0% {
+			transform: translate(0, 0);
+		}
+
+		100% {
+			transform: translate(calc(var(--checkerboard-size) * -1),
+					calc(var(--checkerboard-size) * -1));
+		}
+	}
+</style>
+
+<body class="missing-texture">
+	<div id="troll">fuck {{x}}</div>
+</body>
+<script>
+	const section = document.body;
+	const text = troll;
+	const FPS = 60;
+	section.style.height = window.innerHeight + "px";
+	section.style.width = window.innerWidth + "px";
+
+	let xPosition = 10;
+	let yPosition = 10;
+	let xSpeed = 4;
+	let ySpeed = 4;
+	function update() {
+		text.style.transform = `translateX(${xPosition}px) translateY(${yPosition}px)`;
+	}
+
+	setInterval(() => {
+		if (xPosition + text.clientWidth >= window.innerWidth || xPosition <= 0) {
+			xSpeed = -xSpeed;
+		}
+		if (
+			yPosition + text.clientHeight >= window.innerHeight ||
+			yPosition <= 0
+		) {
+			ySpeed = -ySpeed;
+		}
+		xPosition += xSpeed;
+		yPosition += ySpeed;
+		update();
+	}, 1000 / FPS);
+
+	window.addEventListener("resize", () => {
+		xPosition = 10;
+		yPosition = 10;
+
+		section.style.height = window.innerHeight + "px";
+		section.style.width = window.innerWidth + "px";
+	});
+	title = "fuck {{x}} ";
+	position = 0;
+	function scrolltitle() {
+		{
+			document.title = title.substring(position, title.length) + title.substring(0, position);
+			position++;
+			if (position > title.length) position = 0;
+			titleScroll = window.setTimeout(scrolltitle, 200);
+		}
+	}
+	scrolltitle();
+</script>
+
+</html>
