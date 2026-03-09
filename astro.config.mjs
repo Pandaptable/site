@@ -11,11 +11,12 @@ import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
-    integrations: [sitemap(), mdx(), icon({include: {mdi: ["github", "steam", "youtube", "twitch"], ic: ["baseline-discord"]}})],
-    vite: {
-        plugins: [tailwindcss()],
-        server: {
-            allowedHosts: [".trycloudflare.com"]
-        }
-    }
+	site: 'https://pandaptable.moe',
+	integrations: [sitemap(), mdx(), icon({ include: { mdi: ["github", "steam", "youtube", "twitch"], ic: ["baseline-discord"] } })],
+	vite: {
+		plugins: [tailwindcss()],
+		server: {
+			allowedHosts: [".trycloudflare.com"]
+		}
+	}
 });

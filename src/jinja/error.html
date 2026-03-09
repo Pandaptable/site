@@ -4,9 +4,11 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<link rel="icon" href="/favicon.ico" />
 	<title>{{title}}</title>
 	<style>
-				* {
+		* {
 			margin: 0;
 			padding: 0;
 			box-sizing: border-box;
@@ -181,13 +183,13 @@
 		const geometry = new TextGeometry("{{title}}", {
 			font: font,
 			size: 60,
-			depth: isMobile ? 10 : 15,
-			curveSegments: isMobile ? 6 : 12,
+			depth: 10,
+			curveSegments: 6,
 			bevelEnabled: true,
-			bevelThickness: isMobile ? 2 : 3,
-			bevelSize: isMobile ? 1 : 2,
+			bevelThickness: 2,
+			bevelSize: 1,
 			bevelOffset: 0,
-			bevelSegments: isMobile ? 4 : 8,
+			bevelSegments: 4,
 		});
 
 		geometry.computeBoundingBox();
