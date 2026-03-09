@@ -1,6 +1,8 @@
 services:
   nemmy-site:
     build: .
-    ports:
-     - 7911:8000
     restart: unless-stopped
+
+networks:
+  caddy:
+    external: true
