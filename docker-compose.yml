@@ -2,5 +2,5 @@ services:
   nemmy-site:
     build: .
     ports:
-     - 8000:7911
+     - 7911:8000
     restart: unless-stopped
