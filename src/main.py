@@ -53,10 +53,13 @@ class AgeMiddleware(BaseHTTPMiddleware):
 		age = str(website.calculate_age())
 		body = body.replace(b"%%AGE%%", age.encode())
 
+		headers = dict(response.headers)
+		headers.pop("content-length", None)  # Remove the old length
+
 		return Response(
 			content=body,
 			status_code=response.status_code,
-			headers=dict(response.headers),
+			headers=headers,
 			media_type=response.media_type,
 		)
 
