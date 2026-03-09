@@ -13,5 +13,5 @@ WORKDIR /app
 COPY --from=base /app/dist ./dist
 COPY . ./
 
-EXPOSE 7911
+EXPOSE 8000
 ENTRYPOINT ["uv", "run", "--with", "gunicorn", "gunicorn", "--pythonpath", "/app/src", "main:app"]
