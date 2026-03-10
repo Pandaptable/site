@@ -133,40 +133,6 @@ async def user_banner(user_id: str):
 	return RedirectResponse(user.banner.with_size(4096).url)
 
 
-@app.get("/u/{user_id}")
-async def embed_user(request: Request, user_id: str):
-	if user_id == "@me":
-		user_id = str(website.env["OWNER_ID"])
-	if not user_id.isdigit():
-		return RedirectResponse("/")
-	try:
-		user: discord.User = await website.client.fetch_user(user_id)
-	except (discord.NotFound, discord.HTTPException):
-		return website.jinja_template.TemplateResponse(
-			name="user.html",
-			context={
-				"request": request,
-				"tag": "Not Found",
-				"description": "User not found",
-				"image": "https://cdn.discordapp.com/embed/avatars/0.png",
-				"user": user_id,
-			},
-		)
-	description = f"Created: {user.created_at.strftime('%m/%d/%Y, %H:%M:%S')}\n"
-	if user.public_flags:
-		description += f"Flags: {', '.join([str(flag.name).replace('_', ' ').title() for flag in user.public_flags.all()])}"
-	return website.jinja_template.TemplateResponse(
-		name="user.html",
-		context={
-			"request": request,
-			"tag": f"{user} (Bot)" if user.bot else user,
-			"description": description,
-			"image": user.display_avatar.with_size(4096).url,
-			"user": user_id,
-		},
-	)
-
-
 app.mount("/", StaticFiles(directory="dist", html=True), name="static")
 
 
