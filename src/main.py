@@ -98,9 +98,10 @@ async def fuck_everything(request: Request, fuckery: str):
 			name="error.html",
 			context={
 				"request": request,
-				"title": "404",
+				"title": "400",
 				"message": "Invalid Characters.\nYou can use + for spaces.",
 			},
+			status_code=400,
 		)
 
 
