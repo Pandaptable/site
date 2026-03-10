@@ -25,7 +25,6 @@ async def lifespan(_):
 
 website = Website()
 
-
 sentry_sdk.init(
 	dsn=website.env["SENTRY_DSN"],
 	integrations=[FastApiIntegration(), StarletteIntegration()],
@@ -116,6 +115,11 @@ async def user_avatar(user_id: str):
 	except (discord.NotFound, discord.HTTPException):
 		return RedirectResponse("/")
 	return RedirectResponse(user.display_avatar.with_size(4096).url)
+
+
+@app.get("/teapot")
+async def teapot():
+	return Response(status_code=418)
 
 
 @app.get("/banner/{user_id}")
