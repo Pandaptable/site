@@ -17,7 +17,7 @@ class Website(FastAPI):
 		with open(CONFIG_PATH, "rb") as f:
 			config = tomllib.load(f)
 		self.birthday: datetime.date = config["site"]["BIRTHDAY"]
-		self.client: discord.Client = discord.Client(intents=discord.Intents.none())
+		self.client: discord.Client = discord.Client(intents=discord.Intents.all())
 		self.jinja_template = Jinja2Templates("./src/jinja")
 		self.up_since: str = datetime.datetime.now(datetime.timezone.utc).strftime("%m/%d/%Y, %H:%M:%S")
 		self.links: dict = LRU(30)
