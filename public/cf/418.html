@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<link rel="icon" href="/favicon.ico" />
+	<title>418</title>
+	<style>
+		@import url('https://api.fonts.coollabs.io/css2?family=Figtree:wght@700&display=swap');
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			font-family: "Figtree", sans-serif;
+		}
+
+		.missing-texture {
+			--checkerboard-size: 80px;
+			--checkerboard-color1: #ff00ff;
+			--checkerboard-color2: #000000;
+			--scroll-speed: 2s;
+			position: relative;
+			background: black;
+			isolation: isolate;
+		}
+
+		.missing-texture::before {
+			content: "";
+			position: fixed;
+			top: calc(-1 * var(--checkerboard-size));
+			left: calc(-1 * var(--checkerboard-size));
+			width: calc(100vw + (var(--checkerboard-size) * 2));
+			height: calc(100vh + (var(--checkerboard-size) * 2));
+			z-index: -2;
+			background-image: conic-gradient(var(--checkerboard-color1) 25%,
+					var(--checkerboard-color2) 25% 50%,
+					var(--checkerboard-color1) 50% 75%,
+					var(--checkerboard-color2) 75%);
+			background-size: var(--checkerboard-size) var(--checkerboard-size);
+			animation: scroll var(--scroll-speed) linear infinite;
+		}
+
+		.missing-texture::after {
+			content: "";
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			z-index: -1;
+			background:
+				repeating-linear-gradient(0deg,
+					transparent 0px,
+					transparent 2px,
+					rgba(0, 0, 0, 0.4) 2px,
+					rgba(0, 0, 0, 0.4) 4px),
+				radial-gradient(circle at center,
+					rgba(0, 0, 0, 0.55) 0%,
+					rgba(0, 0, 0, 0.95) 100%);
+		}
+
+		@keyframes scroll {
+			0% {
+				transform: translate(0, 0);
+			}
+
+			100% {
+				transform: translate(calc(var(--checkerboard-size) * -1),
+						calc(var(--checkerboard-size) * -1));
+			}
+		}
+
+		#canvas-container {
+			position: fixed;
+			inset: 0;
+			z-index: 1;
+		}
+
+		.bottom-container {
+			position: fixed;
+			bottom: 3rem;
+			left: 0;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1.5rem;
+			z-index: 3;
+		}
+
+
+		.subtitle {
+			color: #FF0000;
+			font-size: 1.25rem;
+			font-weight: 700;
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+			text-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.3);
+			text-align: center;
+		}
+
+		.cf-footer {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			z-index: 3;
+			background: rgba(0, 0, 0, 0.75);
+			padding: 0.75rem 1.5rem;
+			display: flex;
+			justify-content: center;
+			gap: 2rem;
+			flex-wrap: wrap;
+			font-family: monospace;
+			font-size: 0.75rem;
+			color: #888;
+			border-top: 1px solid rgba(255, 0, 255, 0.2);
+		}
+
+		.cf-footer span {
+			white-space: nowrap;
+		}
+
+		.cf-footer strong {
+			color: #aaa;
+		}
+
+		.cf-error-box {
+			color: #888;
+			font-family: monospace;
+			font-size: 0.7rem;
+			text-align: center;
+			max-width: 90vw;
+		}
+
+		@media (max-width: 768px) {
+
+			html,
+			body {
+				overflow-y: auto;
+			}
+
+			.missing-texture {
+				--checkerboard-size: 50px;
+			}
+
+			.bottom-container {
+				bottom: 5rem;
+				top: auto;
+				padding: 0 1rem;
+			}
+
+			.subtitle {
+				font-size: 1rem;
+				letter-spacing: 0.1em;
+			}
+
+			.cf-error-box {
+				font-size: 0.6rem;
+				max-width: 95vw;
+				word-break: break-word;
+			}
+
+			.cf-footer {
+				position: fixed;
+				bottom: 0;
+				gap: 0.75rem;
+				padding: 0.5rem 1rem;
+				font-size: 0.65rem;
+				flex-direction: column;
+				align-items: center;
+			}
+		}
+	</style>
+</head>
+
+<body class="missing-texture">
+	<div id="canvas-container"></div>
+	<div class="bottom-container">
+		<p class="subtitle">I'm a teapot</p>
+	</div>
+	<footer class="cf-footer">
+		<span><strong>IP:</strong> ::CLIENT_IP::</span>
+		<span><strong>Ray ID:</strong> ::RAY_ID::</span>
+		<span><strong>Location:</strong> ::GEO::</span>
+	</footer>
+
+	<script type="importmap">
+		{
+			"imports": {
+				"three": "https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.js",
+				"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"
+			}
+		}
+	</script>
+	<script type="module">
+		import * as THREE from "three";
+		import { TeapotGeometry } from "three/addons/geometries/TeapotGeometry.js";
+
+		const container = document.getElementById("canvas-container");
+		const scene = new THREE.Scene();
+
+		const camera = new THREE.PerspectiveCamera(
+			45,
+			window.innerWidth / window.innerHeight,
+			0.1,
+			1000,
+		);
+		camera.position.z = 200;
+		camera.position.y = 0;
+
+		const renderer = new THREE.WebGLRenderer({
+			antialias: false,
+			alpha: true,
+		});
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setClearColor(0x000000, 0);
+		container.appendChild(renderer.domElement);
+
+		let mesh = null;
+		const baseColor = new THREE.Color(0xff0000);
+		const darkColor = new THREE.Color(0x440000);
+
+		const geometry = new TeapotGeometry(50, 10);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: false });
+
+		mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+
+		function animate() {
+			requestAnimationFrame(animate);
+			if (mesh) {
+				mesh.rotation.y += 0.015;
+				mesh.rotation.x = Math.sin(Date.now() * 0.001) * 0.15;
+
+				const t = (Math.sin(Date.now() * 0.003) + 1) / 2;
+				mesh.material.color.copy(darkColor).lerp(baseColor, t);
+			}
+			renderer.render(scene, camera);
+		}
+		animate();
+
+		window.addEventListener("resize", () => {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.position.z = 200;
+			camera.updateProjectionMatrix();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+		});
+	</script>
+</body>
+
+</html>
