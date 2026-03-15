@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+	<meta name="darkreader-lock">
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -141,49 +142,49 @@
 			text-transform: uppercase;
 			text-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.3);
 			text-align: center;
+		}
 
-			@media (max-width: 768px) {
+		@media (max-width: 768px) {
 
-				html,
-				body {
-					overflow-y: auto;
-				}
-
-				.missing-texture {
-					--checkerboard-size: 50px;
-				}
-
-				.bottom-container {
-					bottom: 5rem;
-					top: auto;
-					padding: 0 1rem;
-				}
-
-				.subtitle {
-					font-size: 1rem;
-					letter-spacing: 0.1em;
-				}
-
-				.cf-error-box {
-					font-size: 1.15rem;
-					max-width: 95vw;
-					word-break: break-word;
-				}
-
-				.cf-footer {
-					position: fixed;
-					bottom: 0;
-					gap: 0.75rem;
-					padding: 0.5rem 1rem;
-					font-size: 0.65rem;
-					flex-direction: column;
-					align-items: center;
-				}
+			html,
+			body {
+				overflow-y: auto;
 			}
 
-			.cf-error-details ul {
-				display: none;
+			.missing-texture {
+				--checkerboard-size: 50px;
 			}
+
+			.bottom-container {
+				bottom: 5rem;
+				top: auto;
+			}
+
+			.subtitle {
+				font-size: 1rem;
+				letter-spacing: 0.1em;
+			}
+
+			.cf-error-box {
+				font-size: 1.15rem;
+				max-width: 95vw;
+				word-break: break-word;
+			}
+
+			.cf-footer {
+				position: fixed;
+				bottom: 0;
+				gap: 0.75rem;
+				padding: 0.5rem 1rem;
+				font-size: 0.65rem;
+				flex-direction: column;
+				align-items: center;
+			}
+		}
+
+		.cf-error-details ul {
+			display: none;
+		}
 	</style>
 </head>
 
