@@ -1,5 +1,5 @@
 ---
-const { class: className, title, href, ...rest } = Astro.props;
+const { class: className, title, subtext, href, ...rest } = Astro.props;
 const Element = href ? "a" : "div";
 ---
 
@@ -9,11 +9,18 @@ const Element = href ? "a" : "div";
 	{...rest}
 >
 	{
-		title && (
-			<div class="border-b border-ctp-surface1 pb-3 mb-4">
-				<h2 class="text-lg font-semibold text-center text-ctp-text">
-					{title}
-				</h2>
+		(title || subtext) && (
+			<div class="border-b border-ctp-surface1 pb-3 mb-4 text-center">
+				{title && (
+					<h2 class="text-lg font-semibold text-ctp-text">{title}</h2>
+				)}
+				{subtext && (
+					<p
+						class={`text-sm text-ctp-subtext0 ${title ? "mt-1" : ""}`}
+					>
+						{subtext}
+					</p>
+				)}
 			</div>
 		)
 	}
