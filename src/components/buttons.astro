@@ -1,28 +1,85 @@
 <div class="flex flex-wrap gap-1" id="buttons-container">
-	<a href="https://pandaptable.moe"
-		><img src="/buttons/button.avif" width="88" height="31" /></a
-	>
-	<a href="https://riverr.ftp.sh/"
+	<div class="relative group w-22 h-7.75">
+		<a href="https://pandaptable.moe">
+			<img
+				src="/buttons/button.avif"
+				width="88"
+				height="31"
+				alt="88x31 button"
+			/>
+		</a>
+
+		<button
+			id="copy-btn"
+			class="absolute inset-0 z-10 flex items-center justify-center bg-black/75 text-white text-xs font-bold opacity-0 transition-opacity duration-200 group-hover:opacity-100 cursor-pointer rounded-sm"
+			data-url="https://pandaptable.moe"
+			title="Copy URL"
+		>
+			Copy
+		</button>
+	</div>
+	<a href="https://panley.みんな"
 		><img
-			src="https://riverr.ftp.sh/button.png"
+			src="/buttons/panley.png"
 			width="88"
 			height="31"
+			alt="88x31 button"
 		/></a
 	>
-	<a href="https://panley.みんな"
-		><img src="/buttons/panley.png" width="88" height="31" /></a
-	>
 	<a href="https://estro.gay"
-		><img src="/buttons/lexi.png" width="88" height="31" /></a
+		><img
+			src="/buttons/lexi.png"
+			width="88"
+			height="31"
+			alt="88x31 button"
+		/></a
 	>
 	<a href="https://azzie.gay"
-		><img src="/buttons/azzie.png" width="88" height="31" /></a
+		><img
+			src="/buttons/azzie.png"
+			width="88"
+			height="31"
+			alt="88x31 button"
+		/></a
 	>
+	<a href="https://mauve.beer"
+		><img
+			src="https://lumap.xyz/button.png"
+			width="88"
+			height="31"
+			alt="88x31 button"
+		/></a
+	>
+	<a href="https://tilde.town/~azee">
+		<img
+			src="https://tilde.town/~azee/images/web-badge.gif"
+			alt="88x31 button"
+		/>
+	</a>
 	<a href="https://steamcommunity.com"
-		><img src="/buttons/steam.gif" width="88" height="31" /></a
+		><img
+			src="/buttons/steam.gif"
+			width="88"
+			height="31"
+			alt="88x31 button"
+		/></a
 	>
-	<a><img src="/buttons/hellokitty.gif" width="88" height="31" /></a>
-	<a><img src="/buttons/newlambda.gif" width="88" height="31" /></a>
+	<a
+		><img
+			src="/buttons/hellokitty.gif"
+			width="88"
+			height="31"
+			alt="88x31 button"
+		/></a
+	>
+	<a
+		><img
+			src="/buttons/newlambda.gif"
+			width="88"
+			height="31"
+			alt="88x31 button"
+		/></a
+	>
 </div>
 
 <script>
@@ -34,5 +91,32 @@
 			[children[i], children[j]] = [children[j], children[i]];
 		}
 		children.forEach((child) => container.appendChild(child));
+	}
+
+	const copyBtn = document.getElementById("copy-btn");
+
+	if (copyBtn) {
+		copyBtn.addEventListener("click", async (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+
+			const copyText = `<a href="https://pandaptable.moe"><img src="https://pandaptable.moe/buttons/button.avif" width="88" height="31" alt="88x31 button"></a>`;
+
+			if (copyText) {
+				try {
+					await navigator.clipboard.writeText(copyText);
+
+					copyBtn.innerText = "Copied!";
+					copyBtn.classList.add("text-green-400");
+
+					setTimeout(() => {
+						copyBtn.innerText = "Copy";
+						copyBtn.classList.remove("text-green-400");
+					}, 2000);
+				} catch (err) {
+					console.error("Failed to copy url: ", err);
+				}
+			}
+		});
 	}
 </script>
