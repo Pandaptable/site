@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 
@@ -15,8 +16,27 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from utils import Website
 
 
+class AgeHandler:
+	def __init__(self):
+		self.age = 0
+		self._age_task = None
+
+	async def age_task(self) -> None:
+		try:
+			while True:
+				self.age = website.calculate_age()
+				print(f"Updated age to {self.age}")
+				await asyncio.sleep(86400)
+		except asyncio.CancelledError:
+			pass
+
+
+age_task = AgeHandler()
+
+
 async def lifespan(_):
 	await website.login()
+	age_task._age_task = asyncio.create_task(age_task.age_task())
 	logger.info("Website & API ready")
 	yield
 	await website.client.close()
@@ -135,6 +155,7 @@ async def user_banner(user_id: str):
 	if not user.banner:
 		return RedirectResponse("/")
 	return RedirectResponse(user.banner.with_size(4096).url)
+
 
 @app.get("/meow.json")
 async def meow_json():
