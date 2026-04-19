@@ -7,24 +7,65 @@ import Card from "./card.astro";
 	href="https://anilist.co/user/Pandaptable/"
 	class="row-span-2 col-span-2 md:col-span-4"
 >
-	<div class="anilist-grid" id="anilist-grid">
-		{
-			Array.from({ length: 4 }).map(() => (
-				<div class="anilist-activity anilist-skeleton">
-					<div class="anilist-cover" />
-					<div class="anilist-info">
-						<span class="anilist-title skeleton-line" />
-						<span class="anilist-status skeleton-line short" />
-						<span class="anilist-time skeleton-line shorter" />
+	<div class="anilist-carousel" id="anilist-carousel">
+		<button
+			id="anilist-prev"
+			class="anilist-nav-btn anilist-nav-prev"
+			aria-label="Previous activities"
+			disabled
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path d="m15 18-6-6 6-6"></path>
+			</svg>
+		</button>
+
+		<div class="anilist-grid" id="anilist-grid">
+			{
+				Array.from({ length: 4 }).map(() => (
+					<div class="anilist-activity anilist-skeleton">
+						<div class="anilist-cover" />
+						<div class="anilist-info">
+							<span class="anilist-title skeleton-line" />
+							<span class="anilist-status skeleton-line short" />
+							<span class="anilist-time skeleton-line shorter" />
+						</div>
 					</div>
-				</div>
-			))
-		}
+				))
+			}
+		</div>
+
+		<button
+			id="anilist-next"
+			class="anilist-nav-btn anilist-nav-next"
+			aria-label="Next activities"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path d="m9 18 6-6-6-6"></path>
+			</svg>
+		</button>
 	</div>
 </Card>
 
 <script>
 	const ANILIST_USER_ID = 713317;
+	let currentPage = 1;
+	let isFetching = false;
 
 	const TIME_UNITS: [string, number][] = [
 		["year", 31536000],
@@ -51,12 +92,28 @@ import Card from "./card.astro";
 		return raw.charAt(0).toUpperCase() + raw.slice(1);
 	}
 
-	async function loadAniList() {
+	async function loadAniList(page: number = 1) {
+		if (isFetching) return;
+		isFetching = true;
+
+		const carousel = document.getElementById("anilist-carousel");
 		const grid = document.getElementById("anilist-grid");
+		const prevBtn = document.getElementById(
+			"anilist-prev",
+		) as HTMLButtonElement | null;
+		const nextBtn = document.getElementById(
+			"anilist-next",
+		) as HTMLButtonElement | null;
+
 		if (!grid) return;
 
+		if (page > 1) grid.style.opacity = "0.5";
+
 		const query = `query {
-			Page(page: 1, perPage: 4) {
+			Page(page: ${page}, perPage: 4) {
+				pageInfo {
+					hasNextPage
+				}
 				activities(userId: ${ANILIST_USER_ID}, sort: ID_DESC) {
 					... on ListActivity {
 						createdAt
@@ -86,6 +143,7 @@ import Card from "./card.astro";
 
 			if (!res.data) return;
 
+			const pageInfo = res.data.Page.pageInfo;
 			const activities = res.data.Page.activities.filter(
 				(a: any) => a.media,
 			);
@@ -108,8 +166,14 @@ import Card from "./card.astro";
 				</a>`,
 				)
 				.join("");
+
+			if (prevBtn) prevBtn.disabled = page === 1;
+			if (nextBtn) nextBtn.disabled = !pageInfo.hasNextPage;
 		} catch (e) {
 			console.error("Failed to fetch AniList data:", e);
+		} finally {
+			grid.style.opacity = "1";
+			isFetching = false;
 		}
 	}
 
@@ -122,15 +186,37 @@ import Card from "./card.astro";
 			});
 	}
 
-	loadAniList();
+	document.getElementById("anilist-prev")?.addEventListener("click", (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (currentPage > 1) {
+			currentPage--;
+			loadAniList(currentPage);
+		}
+	});
+
+	document.getElementById("anilist-next")?.addEventListener("click", (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		currentPage++;
+		loadAniList(currentPage);
+	});
+
+	loadAniList(1);
 	setInterval(updateTimes, 60000);
 </script>
 
 <style is:global>
+	.anilist-carousel {
+		position: relative;
+		width: 100%;
+	}
+
 	.anilist-grid {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: 0.75rem;
+		transition: opacity 0.2s ease;
 	}
 
 	@media (max-width: 640px) {
@@ -224,5 +310,58 @@ import Card from "./card.astro";
 		50% {
 			opacity: 0.8;
 		}
+	}
+
+	.anilist-nav-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background-color: var(--color-ctp-surface0, rgba(255, 255, 255, 0.05));
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		color: var(--color-ctp-subtext0, #a6adc8);
+		cursor: pointer;
+		transition:
+			all 0.2s ease,
+			visibility 0.2s ease,
+			opacity 0.2s ease;
+		flex-shrink: 0;
+		z-index: 10;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	.anilist-carousel:hover .anilist-nav-btn {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.anilist-nav-prev {
+		left: -1rem;
+	}
+
+	.anilist-nav-next {
+		right: -1rem;
+	}
+
+	.anilist-nav-btn:hover:not(:disabled) {
+		background-color: rgba(255, 255, 255, 0.1);
+		color: var(--color-ctp-text, #cdd6f4);
+		border-color: var(--color-ctp-mauve);
+	}
+
+	.anilist-nav-btn:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	.anilist-nav-btn svg {
+		width: 16px;
+		height: 16px;
 	}
 </style>
