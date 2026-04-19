@@ -424,12 +424,14 @@ import Card from "../components/card.astro";
 		position: relative;
 		display: flex;
 		flex-direction: column;
+		justify-content: center;
 		border-radius: 0.75rem;
 		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid var(--color-ctp-surface0);
 		margin-top: 0.75rem;
 		width: 100%;
 		text-align: left;
+		height: 120px;
 	}
 
 	.discord-nav {
@@ -474,9 +476,13 @@ import Card from "../components/card.astro";
 		display: flex;
 		gap: 0.75rem;
 		padding: 0.625rem;
+		align-items: center;
 	}
 
 	.discord-progress {
+		position: absolute;
+		bottom: 0;
+		left: 0;
 		width: 100%;
 		height: 4px;
 		background: var(--color-ctp-surface0);
