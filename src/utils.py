@@ -19,8 +19,9 @@ class Website(FastAPI):
 		self.birthday: datetime.date = config["site"]["BIRTHDAY"]
 		self.client: discord.Client = discord.Client(intents=discord.Intents.all())
 		self.jinja_template = Jinja2Templates("./src/jinja")
-		self.up_since: str = datetime.datetime.now(datetime.timezone.utc).strftime("%m/%d/%Y, %H:%M:%S")
+		self.up_since: str = datetime.datetime.now(datetime.UTC).strftime("%m/%d/%Y, %H:%M:%S")
 		self.links: dict = LRU(30)
+		self.age: str = self.calculate_age()
 		self.env: dict = {
 			"BASE_URL": config["site"]["BASE_URL"],
 			"CHANNEL_ID": config["discord"]["CHANNEL_ID"],

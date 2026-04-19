@@ -49,7 +49,7 @@ class AgeMiddleware(BaseHTTPMiddleware):
 		async for chunk in response.body_iterator:
 			body += chunk if isinstance(chunk, bytes) else chunk.encode()
 
-		age = str(website.calculate_age())
+		age = str(website.age)
 		body = body.replace(b"%%AGE%%", age.encode())
 
 		headers = dict(response.headers)
@@ -135,6 +135,14 @@ async def user_banner(user_id: str):
 	if not user.banner:
 		return RedirectResponse("/")
 	return RedirectResponse(user.banner.with_size(4096).url)
+
+@app.get("/meow.json")
+async def meow_json():
+	return {
+		"type": "link",
+		"version": "1.0",
+		"author_name": f"{website.age} y/o catgirl",
+	}
 
 
 app.mount("/", StaticFiles(directory="dist", html=True), name="static")
