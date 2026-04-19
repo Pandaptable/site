@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import tomllib
 from pathlib import Path
@@ -32,6 +33,7 @@ class Website(FastAPI):
 			"SENTRY_DSN": config["sentry"]["SENTRY_DSN"],
 			"LOG_LEVEL": config["site"]["LOG_LEVEL"],
 		}
+		asyncio.create_task(self.age_task())
 
 	def calculate_age(self) -> int:
 		"""Calculates current age based on birthday in Eastern time."""
@@ -40,6 +42,12 @@ class Website(FastAPI):
 		if (today.month, today.day) < (self.birthday.month, self.birthday.day):
 			age -= 1
 		return age
+
+	async def age_task(self) -> None:
+		"""Updates self.age every 24 hours."""
+		while True:
+			await asyncio.sleep(86400)
+			self.age = self.calculate_age()
 
 	async def login(self) -> None:
 		"""Logs in the client."""
