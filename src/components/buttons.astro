@@ -1,11 +1,15 @@
+---
+import { Image } from "astro:assets";
+---
+
 <div class="flex flex-wrap gap-1" id="buttons-container">
 	<div class="relative group w-22 h-7.75">
 		<a href="https://pandaptable.moe">
-			<img
+			<Image
 				src="/buttons/button.avif"
-				width="88"
-				height="31"
-				alt="88x31 button"
+				width={88}
+				height={31}
+				alt="pandaptable.moe"
 			/>
 		</a>
 
@@ -18,68 +22,56 @@
 			Copy
 		</button>
 	</div>
-	<a href="https://panley.みんな"
-		><img
+	<a href="https://panley.みんな">
+		<Image
 			src="/buttons/panley.png"
-			width="88"
-			height="31"
-			alt="88x31 button"
-		/></a
-	>
-	<a href="https://estro.gay"
-		><img
-			src="/buttons/lexi.png"
-			width="88"
-			height="31"
-			alt="88x31 button"
-		/></a
-	>
-	<a href="https://azzie.gay"
-		><img
-			src="/buttons/azzie.png"
-			width="88"
-			height="31"
-			alt="88x31 button"
-		/></a
-	>
-	<a href="https://mauve.beer"
-		><img
-			src="https://lumap.xyz/button.png"
-			width="88"
-			height="31"
-			alt="88x31 button"
-		/></a
-	>
-	<a href="https://tilde.town/~azee">
-		<img
-			src="https://tilde.town/~azee/images/web-badge.gif"
-			alt="88x31 button"
+			width={88}
+			height={31}
+			alt="the panler"
 		/>
 	</a>
-	<a href="https://steamcommunity.com"
-		><img
+	<a href="https://estro.gay">
+		<Image src="/buttons/lexi.png" width={88} height={31} alt="lexi :3" />
+	</a>
+	<a href="https://azzie.gay">
+		<Image src="/buttons/azzie.png" width={88} height={31} alt="azzie ;3" />
+	</a>
+	<a href="https://mauve.beer">
+		<Image
+			src="https://lumap.xyz/button.png"
+			width={88}
+			height={31}
+			alt="mauve"
+		/>
+	</a>
+	<a href="https://tilde.town/~azee">
+		<Image
+			src="https://tilde.town/~azee/images/web-badge.gif"
+			width={88}
+			height={31}
+			alt="azee"
+		/>
+	</a>
+	<a href="https://steamcommunity.com">
+		<Image
 			src="/buttons/steam.gif"
-			width="88"
-			height="31"
-			alt="88x31 button"
-		/></a
-	>
-	<a
-		><img
-			src="/buttons/hellokitty.gif"
-			width="88"
-			height="31"
-			alt="88x31 button"
-		/></a
-	>
-	<a
-		><img
-			src="/buttons/newlambda.gif"
-			width="88"
-			height="31"
-			alt="88x31 button"
-		/></a
-	>
+			width={88}
+			height={31}
+			alt="mmmfffhgggg valve,,,"
+		/>
+	</a>
+	<Image
+		src="/buttons/hellokitty.gif"
+		width={88}
+		height={31}
+		alt="haiiiii ;3"
+	/>
+	<Image
+		src="/buttons/newlambda.gif"
+		width={88}
+		height={31}
+		alt="hl1 is the best half life."
+	/>
 </div>
 
 <script>
