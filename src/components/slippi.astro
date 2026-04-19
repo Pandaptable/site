@@ -2,19 +2,20 @@
 import Card from "./card.astro";
 ---
 
-<Card class="col-span-4 row-span-3 overflow-hidden p-0 relative min-h-75">
+<Card class="row-span-4 col-span-2 md:col-span-6 lg:col-span-8 overflow-hidden p-0 relative min-h-75">
 	<slippi-viewer
-		id="melee-viewer"
+		id="slippi-viewer"
 		zips-base-url="/"
 		class="w-full h-full block"></slippi-viewer>
 
 	<script>
 		import "@gcpreston/slippi-viewer";
 
-		const viewer = document.getElementById("melee-viewer") as any;
+		const viewer = document.getElementById("slippi-viewer") as any;
 
 		if (viewer) {
-			const wsUrl = `ws://${window.location.host}/viewer_socket/websocket?stream_id=1085325150`;
+			// const wsUrl = `ws://${window.location.host}/viewer_socket/websocket?stream_id=1085325150`;
+			const wsUrl = `ws://localhost:4102`;
 			viewer.spectate(wsUrl);
 		}
 	</script>
