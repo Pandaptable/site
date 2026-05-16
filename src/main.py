@@ -1,19 +1,34 @@
 import asyncio
 import logging
 import sys
+from pathlib import Path
 
 import discord
 import sentry_sdk
 import uvicorn
-from fastapi import FastAPI, Request, Response
-from fastapi.responses import RedirectResponse
-from fastapi.staticfiles import StaticFiles
+from litestar import Litestar, Request, get
+from litestar.contrib.jinja import JinjaTemplateEngine
+from litestar.response import Redirect, Response, Template
+from litestar.static_files import StaticFilesConfig
+from litestar.template import TemplateConfig
+from litestar.types import ASGIApp, Receive, Scope, Send
 from loguru import logger
-from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.starlette import StarletteIntegration
-from starlette.middleware.base import BaseHTTPMiddleware
+from sentry_sdk.integrations.litestar import LitestarIntegration
 
 from utils import Website
+
+website = Website()
+
+
+sentry_sdk.init(
+	dsn=website.env["SENTRY_DSN"],
+	integrations=[LitestarIntegration()],
+	traces_sample_rate=1.0,
+	profiles_sample_rate=0.5,
+	send_default_pii=True,
+)
+
+LOG_LEVEL = website.env["LOG_LEVEL"]
 
 
 class AgeHandler:
@@ -34,89 +49,92 @@ class AgeHandler:
 age_task = AgeHandler()
 
 
-async def lifespan(_):
+async def lifespan_startup(app: Litestar):
 	await website.login()
 	age_task._age_task = asyncio.create_task(age_task.age_task())
 	logger.info("Website & API ready")
-	yield
+
+
+async def lifespan_shutdown(app: Litestar):
 	await website.client.close()
 	logger.info("Shut down website & API")
 
 
-website = Website()
+class AgeMiddleware:
+	def __init__(self, app: ASGIApp):
+		self.app = app
 
-sentry_sdk.init(
-	dsn=website.env["SENTRY_DSN"],
-	integrations=[FastApiIntegration(), StarletteIntegration()],
-	traces_sample_rate=1.0,
-	profiles_sample_rate=0.5,
-	send_default_pii=True,
-)
+	async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+		if scope["type"] != "http":
+			await self.app(scope, receive, send)
+			return
 
-app = FastAPI(lifespan=lifespan)
+		body_chunks: list[bytes] = []
+		response_started: dict = {}
 
-LOG_LEVEL = website.env["LOG_LEVEL"]
+		async def send_wrapper(message):
+			if message["type"] == "http.response.start":
+				response_started.update(message)
+			elif message["type"] == "http.response.body":
+				body_chunks.append(message.get("body", b""))
+				if not message.get("more_body", False):
+					content_type = ""
+					for name, value in response_started.get("headers", []):
+						if name == b"content-type":
+							content_type = value.decode()
+							break
+
+					full_body = b"".join(body_chunks)
+
+					if any(ct in content_type for ct in ("text/html", "application/json")):
+						full_body = full_body.replace(b"%%AGE%%", str(website.age).encode())
+
+					new_headers = [
+						h for h in response_started.get("headers", []) if h[0] != b"content-length"
+					]
+					new_headers.append((b"content-length", str(len(full_body)).encode()))
+
+					await send({
+						"type": "http.response.start",
+						"status": response_started["status"],
+						"headers": new_headers,
+					})
+					await send({
+						"type": "http.response.body",
+						"body": full_body,
+						"more_body": False,
+					})
+
+		await self.app(scope, receive, send_wrapper)
 
 
-class AgeMiddleware(BaseHTTPMiddleware):
-	async def dispatch(self, request: Request, call_next):
-		response = await call_next(request)
-		content_type = response.headers.get("content-type", "")
-		if not any(ct in content_type for ct in ("text/html", "application/json")):
-			return response
-
-		body = b""
-		async for chunk in response.body_iterator:
-			body += chunk if isinstance(chunk, bytes) else chunk.encode()
-
-		age = str(website.age)
-		body = body.replace(b"%%AGE%%", age.encode())
-
-		headers = dict(response.headers)
-		headers.pop("content-length", None)  # Remove the old length
-
-		return Response(
-			content=body,
-			status_code=response.status_code,
-			headers=headers,
-			media_type=response.media_type,
-		)
-
-
-app.add_middleware(AgeMiddleware)
-
-
-@app.get("/info")
-async def info_handler():
+@get("/info")
+async def info_handler() -> str:
 	return f"Up since: {website.up_since} (UTC)"
 
 
-@app.get("/s/{code}")
-async def redirector(code: str):
+@get("/s/{code:str}")
+async def redirector(code: str) -> Redirect:
 	if not website.links.get(code):
 		await website.reload_links()
 	if not website.links.get(code):
-		return RedirectResponse("/")
-	return RedirectResponse(website.links.get(code))
+		return Redirect("/")
+	return Redirect(website.links.get(code))
 
 
-@app.get("/fuck/{fuckery}")
-async def fuck_everything(request: Request, fuckery: str):
+@get("/fuck/{fuckery:str}")
+async def fuck_everything(request: Request, fuckery: str) -> Template | Response:
 	lmao = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789/+"
 
 	def check(word: str):
 		return all(i in lmao for i in word)
 
 	if check(fuckery):
-		return website.jinja_template.TemplateResponse(
-			name="fuck.html",
-			context={"request": request, "x": fuckery.replace("+", " ")},
-		)
+		return Template("fuck.html", context={"x": fuckery.replace("+", " ")})
 	else:
-		return website.jinja_template.TemplateResponse(
-			name="error.html",
+		return Template(
+			"error.html",
 			context={
-				"request": request,
 				"title": "400",
 				"message": "Invalid Characters.\nYou can use + for spaces.",
 			},
@@ -124,41 +142,41 @@ async def fuck_everything(request: Request, fuckery: str):
 		)
 
 
-@app.get("/av/{user_id}")
-async def user_avatar(user_id: str):
+@get("/av/{user_id:str}")
+async def user_avatar(user_id: str) -> Redirect:
 	if user_id == "@me":
 		user_id = str(website.env["OWNER_ID"])
 	if not user_id.isdigit():
-		return RedirectResponse("/")
+		return Redirect("/")
 	try:
 		user: discord.User = await website.client.fetch_user(user_id)
 	except (discord.NotFound, discord.HTTPException):
-		return RedirectResponse("/")
-	return RedirectResponse(user.display_avatar.with_size(4096).url)
+		return Redirect("/")
+	return Redirect(user.display_avatar.with_size(4096).url)
 
 
-@app.get("/teapot")
-async def teapot():
+@get("/teapot")
+async def teapot() -> Response:
 	return Response(status_code=418)
 
 
-@app.get("/banner/{user_id}")
-async def user_banner(user_id: str):
+@get("/banner/{user_id:str}")
+async def user_banner(user_id: str) -> Redirect:
 	if user_id == "@me":
 		user_id = str(website.env["OWNER_ID"])
 	if not user_id.isdigit():
-		return RedirectResponse("/")
+		return Redirect("/")
 	try:
 		user: discord.User = await website.client.fetch_user(user_id)
 	except (discord.NotFound, discord.HTTPException):
-		return RedirectResponse("/")
+		return Redirect("/")
 	if not user.banner:
-		return RedirectResponse("/")
-	return RedirectResponse(user.banner.with_size(4096).url)
+		return Redirect("/")
+	return Redirect(user.banner.with_size(4096).url)
 
 
-@app.get("/meow.json")
-async def meow_json():
+@get("/meow.json")
+async def meow_json() -> dict:
 	return {
 		"type": "link",
 		"version": "1.0",
@@ -166,7 +184,27 @@ async def meow_json():
 	}
 
 
-app.mount("/", StaticFiles(directory="dist", html=True), name="static")
+app = Litestar(
+	route_handlers=[
+		info_handler,
+		redirector,
+		fuck_everything,
+		user_avatar,
+		teapot,
+		user_banner,
+		meow_json,
+	],
+	middleware=[AgeMiddleware],
+	on_startup=[lifespan_startup],
+	on_shutdown=[lifespan_shutdown],
+	static_files_config=[
+		StaticFilesConfig(directories=["dist"], path="/", html_mode=True),
+	],
+	template_config=TemplateConfig(
+		directory=Path(__file__).parent / "jinja",
+		engine=JinjaTemplateEngine,
+	),
+)
 
 
 class InterceptHandler(logging.Handler):

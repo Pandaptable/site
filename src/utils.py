@@ -5,21 +5,18 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import discord
-from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
 from lru import LRU
 
 CONFIG_PATH = Path(__file__).parent / "../config.toml"
 EST = ZoneInfo("America/New_York")
 
 
-class Website(FastAPI):
+class Website:
 	def __init__(self) -> None:
 		with open(CONFIG_PATH, "rb") as f:
 			config = tomllib.load(f)
 		self.birthday: datetime.date = config["site"]["BIRTHDAY"]
 		self.client: discord.Client = discord.Client(intents=discord.Intents.all())
-		self.jinja_template = Jinja2Templates("./src/jinja")
 		self.up_since: str = datetime.datetime.now(datetime.UTC).strftime("%m/%d/%Y, %H:%M:%S")
 		self.links: dict = LRU(30)
 		self.age: str = self.calculate_age()

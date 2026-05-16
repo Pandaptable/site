@@ -1,11 +1,11 @@
-FROM oven/bun:alpine AS base
+FROM node:alpine AS base
 WORKDIR /app
 
-COPY package.json bun.lockb* ./
-RUN bun install
+COPY package.json package-lock.json ./
+RUN npm ci
 
 COPY . ./
-RUN bun run build
+RUN npm run build
 
 FROM ghcr.io/astral-sh/uv:alpine
 WORKDIR /app
@@ -14,4 +14,4 @@ COPY --from=base /app/dist ./dist
 COPY . ./
 
 EXPOSE 8000
-ENTRYPOINT ["uv", "run", "--with", "gunicorn", "--with", "uvicorn", "gunicorn", "-c", "/app/src/gunicorn_conf.py", "--pythonpath", "/app/src", "main:app"]
+ENTRYPOINT ["uv", "run", "uvicorn", "main:app", "--app-dir", "/app/src", "--host", "0.0.0.0", "--port", "8000"]
