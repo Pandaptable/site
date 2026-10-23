@@ -25,18 +25,16 @@ import "../styles/anilist.css";
 		</button>
 
 		<div class="anilist-grid" id="anilist-grid">
-			{
-				Array.from({ length: 4 }).map(() => (
-					<div class="anilist-activity anilist-skeleton">
-						<div class="anilist-cover" />
-						<div class="anilist-info">
-							<span class="anilist-title skeleton-line" />
-							<span class="anilist-status skeleton-line short" />
-							<span class="anilist-time skeleton-line shorter" />
-						</div>
+			{Array.from({ length: 4 }).map(() => (
+				<div class="anilist-activity anilist-skeleton">
+					<div class="anilist-cover" />
+					<div class="anilist-info">
+						<span class="anilist-title skeleton-line" />
+						<span class="anilist-status skeleton-line short" />
+						<span class="anilist-time skeleton-line shorter" />
 					</div>
-				))
-			}
+				</div>
+			))}
 		</div>
 
 		<button

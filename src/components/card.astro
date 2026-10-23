@@ -8,20 +8,18 @@ const Element = href ? "a" : "div";
 	class={`bg-ctp-mantle border border-ctp-surface1 rounded-xl p-4 shadow-sm hover:border-ctp-mauve transition-colors block no-underline ${className || ""}`}
 	{...rest}
 >
-	{
-		(title || subtext) && (
-			<div class="border-b border-ctp-surface1 pb-2 mb-3 text-center">
-				{title && (
-					<h2 class="text-lg font-semibold text-ctp-text">{title}</h2>
-				)}
-				{subtext && (
-					<p class={`text-xs text-ctp-subtext0 ${title ? "mt-0.5" : ""}`}>
-						{subtext}
-					</p>
-				)}
-			</div>
-		)
-	}
+	{(title || subtext) && (
+		<div class="border-b border-ctp-surface1 pb-2 mb-3 text-center">
+			{title && (
+				<h2 class="text-lg font-semibold text-ctp-text">{title}</h2>
+			)}
+			{subtext && (
+				<p class={`text-xs text-ctp-subtext0 ${title ? "mt-0.5" : ""}`}>
+					{subtext}
+				</p>
+			)}
+		</div>
+	)}
 
 	<slot />
 </Element>

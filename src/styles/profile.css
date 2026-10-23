@@ -227,6 +227,7 @@
 	color: var(--color-ctp-subtext0);
 	background: rgba(255, 255, 255, 0.03);
 	border: 1px solid transparent;
+	position: relative;
 	transition: all 0.15s ease;
 }
 
@@ -234,6 +235,8 @@
 	color: var(--color-ctp-mauve);
 	background: rgba(255, 255, 255, 0.06);
 	border-color: var(--color-ctp-mauve);
+	transform: rotate(var(--tilt, -3deg)) scale(1.12);
+	z-index: 1;
 }
 
 .socials-grid svg {

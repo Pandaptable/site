@@ -1,9 +1,5 @@
 ---
 import { Icon } from "astro-icon/components";
-import AvatarAvif from "../../generated/art/pfp.avif";
-import AvatarJpg from "../../generated/art/pfp.jpg";
-// import AvatarJxl from "../../generated/art/pfp.jxl";
-import AvatarWebp from "../../generated/art/pfp.webp";
 import Card from "../components/card.astro";
 import "../styles/profile.css";
 ---
@@ -11,11 +7,10 @@ import "../styles/profile.css";
 <Card class="flex flex-col items-center text-center">
 	<div class="profile-avatar-wrapper">
 		<picture>
-			{/* <source srcset={AvatarJxl} type="image/jxl" /> */}
-			<source srcset={AvatarAvif.src} type="image/avif" />
-			<source srcset={AvatarWebp.src} type="image/webp" />
+			<source srcset="/art/pfp.avif" type="image/avif" />
+			<source srcset="/art/pfp.webp" type="image/webp" />
 			<img
-				src={AvatarJpg.src}
+				src="/art/pfp.jpg"
 				alt="pfp"
 				data-image-component
 				class="w-28 h-28 rounded-full lg:w-48 lg:h-48"
@@ -28,10 +23,9 @@ import "../styles/profile.css";
 	</div>
 	<div class="flex items-center justify-center gap-2 mt-2">
 		<h1 class="text-ctp-text text-2xl font-bold">nemmy</h1>
-		<span
-			class="bg-ctp-mauve-500 text-ctp-base text-sm font-black px-2.5 py-0.5 rounded-full"
-			>she/her</span
-		>
+		<span class="bg-ctp-mauve-500 text-ctp-base text-sm font-black px-2.5 py-0.5 rounded-full">
+			she/her
+		</span>
 	</div>
 	<p class="text-base font-bold text-ctp-subtext1 mt-1 mb-2">
 		%%AGE%% y/o cat raccoon panda thing...
@@ -90,8 +84,13 @@ import "../styles/profile.css";
 								y="0"
 								width="160"
 								height="160"
-								rx="16"></rect>
-						<circle fill="black" cx="141" cy="141" r="27"
+								rx="16"
+							></rect>
+							<circle
+								fill="black"
+								cx="141"
+								cy="141"
+								r="27"
 							></circle>
 						</mask>
 					</defs>
@@ -103,9 +102,17 @@ import "../styles/profile.css";
 			</div>
 			<div class="discord-rpc-info">
 				<span class="discord-status-text"></span>
-				<span class="discord-activity"><span class="rpc-text rpc-static-error">ERROR</span></span>
-				<span class="discord-details"><span class="rpc-text rpc-static-hint">enable javascript for an optimal experience</span></span>
-				<span class="discord-state"><span class="rpc-text"></span></span>
+				<span class="discord-activity">
+					<span class="rpc-text rpc-static-error">ERROR</span>
+				</span>
+				<span class="discord-details">
+					<span class="rpc-text rpc-static-hint">
+						enable javascript for an optimal experience
+					</span>
+				</span>
+				<span class="discord-state">
+					<span class="rpc-text"></span>
+				</span>
 				<span class="discord-timestamp"></span>
 			</div>
 		</div>
@@ -118,12 +125,20 @@ import "../styles/profile.css";
 	<div class="socials-grid">
 		<a
 			href="https://github.com/Pandaptable"
+			target="_blank"
+			rel="noopener noreferrer"
 			aria-label="GitHub"
 			title="GitHub"
 		>
 			<Icon name="mdi:github" />
 		</a>
-		<a href="https://osm.pm/@nem" aria-label="Osmium" title="Osmium">
+		<a
+			href="https://osm.pm/@nem"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="Osmium"
+			title="Osmium"
+		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="currentColor"
@@ -131,16 +146,14 @@ import "../styles/profile.css";
 				role="img"
 				aria-label="Osmium"
 			>
-				<path
-					d="M461 321 167 151 349 46 281 7a51 51 0 0 0-50 0L51 111a47 47 0 0 0 0 80l294 170-182 105 68 39a51 51 0 0 0 50 0l180-104a47 47 0 0 0 0-80Z"
-				></path>
-				<path
-					d="m203 382-82-48v-42l-93-54v121c0 18 9 35 25 44l57 33 93-54Zm256-273-57-33-94 54 83 48v42l93 54V153c0-18-9-35-25-44Z"
-				></path>
+				<path d="M461 321 167 151 349 46 281 7a51 51 0 0 0-50 0L51 111a47 47 0 0 0 0 80l294 170-182 105 68 39a51 51 0 0 0 50 0l180-104a47 47 0 0 0 0-80Z"></path>
+				<path d="m203 382-82-48v-42l-93-54v121c0 18 9 35 25 44l57 33 93-54Zm256-273-57-33-94 54 83 48v42l93 54V153c0-18-9-35-25-44Z"></path>
 			</svg>
 		</a>
 		<a
 			href="https://discord.com/users/97153209843335168"
+			target="_blank"
+			rel="noopener noreferrer"
 			aria-label="Discord"
 			title="Discord"
 		>
@@ -148,6 +161,8 @@ import "../styles/profile.css";
 		</a>
 		<a
 			href="https://steamcommunity.com/profiles/76561198180397682/"
+			target="_blank"
+			rel="noopener noreferrer"
 			aria-label="Steam"
 			title="Steam"
 		>
@@ -155,6 +170,8 @@ import "../styles/profile.css";
 		</a>
 		<a
 			href="https://www.youtube.com/@Pandaptable"
+			target="_blank"
+			rel="noopener noreferrer"
 			aria-label="YouTube"
 			title="YouTube"
 		>
@@ -162,6 +179,8 @@ import "../styles/profile.css";
 		</a>
 		<a
 			href="https://www.twitch.tv/Pandaptable_"
+			target="_blank"
+			rel="noopener noreferrer"
 			aria-label="Twitch"
 			title="Twitch"
 		>
@@ -169,6 +188,8 @@ import "../styles/profile.css";
 		</a>
 		<a
 			href="https://twitter.com/Pandaptable_"
+			target="_blank"
+			rel="noopener noreferrer"
 			aria-label="Twitter"
 			title="Twitter"
 		>
@@ -179,13 +200,13 @@ import "../styles/profile.css";
 				role="img"
 				aria-label="Twitter"
 			>
-				<path
-					d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.2 4.2 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.52 8.52 0 0 1-5.33 1.84q-.51 0-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23"
-				></path>
+				<path d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.2 4.2 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.52 8.52 0 0 1-5.33 1.84q-.51 0-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23"></path>
 			</svg>
 		</a>
 		<a
 			href="https://bsky.app/profile/pandaptable.moe"
+			target="_blank"
+			rel="noopener noreferrer"
 			aria-label="Bluesky"
 			title="Bluesky"
 		>
@@ -196,12 +217,23 @@ import "../styles/profile.css";
 				role="img"
 				aria-label="Bluesky"
 			>
-				<path
-					d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948"
-				></path>
+				<path d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948"></path>
 			</svg>
 		</a>
 	</div>
 </Card>
+
+<script>
+	for (const link of document.querySelectorAll<HTMLElement>(
+		".socials-grid a",
+	)) {
+		link.addEventListener("pointerenter", () => {
+			link.style.setProperty(
+				"--tilt",
+				`${(Math.random() * 10 - 5).toFixed(2)}deg`,
+			);
+		});
+	}
+</script>
 
 <script src="../scripts/lanyard.ts"></script>

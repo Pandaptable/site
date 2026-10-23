@@ -1,18 +1,19 @@
 ---
 import Head from "../components/head.astro";
 import "../styles/global.css";
-
 ---
+
 <!doctype html>
 <html lang="en" class="mocha dark">
 	<head>
-		<Head/>
+		<Head />
 	</head>
 	<body class="missing-texture">
 		<slot />
 	</body>
 
-<script src="../scripts/title.ts"></script>
+	<script src="../scripts/click-sound.ts"></script>
+	<script src="../scripts/title.ts"></script>
 </html>
 
 <style>
@@ -22,5 +23,4 @@ import "../styles/global.css";
 		width: 100%;
 		min-height: 100%;
 	}
-
 </style>

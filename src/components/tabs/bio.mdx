@@ -1,7 +1,5 @@
 import { Image } from "astro:assets";
-import BannerAvif from "../../../generated/art/banner.avif";
-import BannerJpg from "../../../generated/art/banner.jpg";
-import BannerWebp from "../../../generated/art/banner.webp";
+
 
 i'm nemmy, a %%AGE%% y/o woman too autistic about source engine.<br/>
 could you tell i like source. and missing texture :3
@@ -14,13 +12,13 @@ or! i get super autistic about one random thing for a year and end up reversing 
 potentially open to commissions! feel free to reach out- unlikely to do anything i don't find interesting tho.. discord / osmium preferred.
 <br />
 <picture>
-{/* <source srcset={BannerJxl} type="image/jxl" /> */}
-	<source srcset={BannerAvif.src} type="image/avif" />
-	<source srcset={BannerWebp.src} type="image/webp" />
+	<source srcset="/art/banner.avif" type="image/avif" />
+	<source srcset="/art/banner.webp" type="image/webp" />
 	<img
-		src={BannerJpg.src}
+		src="/art/banner.jpg"
 		alt="banner"
-	onload="this.classList.add('img-loaded')"
+		data-image-component
+		onload="this.classList.add('img-loaded')"
 		class="rounded-xl w-full"
 		loading="eager"
 		fetchpriority="high"

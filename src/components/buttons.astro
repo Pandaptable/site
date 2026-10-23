@@ -4,7 +4,12 @@ import { Image } from "astro:assets";
 
 <div class="flex flex-wrap gap-1" id="buttons-container">
 	<div class="relative group w-22 h-7.75">
-	<a href="https://pandaptable.moe" aria-label="pandaptable.moe">
+		<a
+			href="https://pandaptable.moe"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="pandaptable.moe"
+		>
 			<Image
 				src="/buttons/button.avif"
 				width={88}
@@ -24,7 +29,12 @@ import { Image } from "astro:assets";
 			Copy
 		</button>
 	</div>
-	<a href="https://mauve.beer" aria-label="mauve">
+	<a
+		href="https://mauve.beer"
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="mauve"
+	>
 		<Image
 			src="https://lumap.xyz/button.png"
 			width={88}
@@ -34,7 +44,12 @@ import { Image } from "astro:assets";
 			fetchpriority="low"
 		/>
 	</a>
-	<a href="https://emerald.moe" aria-label="emerald">
+	<a
+		href="https://emerald.moe"
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="emerald"
+	>
 		<img
 			src="/buttons/emerald.svg"
 			width={88}
@@ -44,7 +59,12 @@ import { Image } from "astro:assets";
 			fetchpriority="low"
 		/>
 	</a>
-	<a href="https://azee.sh" aria-label="azee">
+	<a
+		href="https://azee.sh"
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="azee"
+	>
 		<Image
 			src="https://azee.sh/images/web-badge.gif"
 			width={88}
@@ -54,7 +74,12 @@ import { Image } from "astro:assets";
 			fetchpriority="low"
 		/>
 	</a>
-	<a href="https://slonk.ing" aria-label="slonk ;3">
+	<a
+		href="https://slonk.ing"
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="slonk ;3"
+	>
 		<Image
 			src="https://slonk.ing/img/88x31.webp"
 			width={88}
@@ -64,7 +89,12 @@ import { Image } from "astro:assets";
 			fetchpriority="low"
 		/>
 	</a>
-	<a href="https://byeoon.dev/" aria-label="byeoon">
+	<a
+		href="https://byeoon.dev/"
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="byeoon"
+	>
 		<Image
 			src="https://byeoon.dev/img/button.png"
 			width={88}
@@ -74,7 +104,12 @@ import { Image } from "astro:assets";
 			fetchpriority="low"
 		/>
 	</a>
-	<a href="steam://open/console" aria-label="mmmfffhgggg valve,,,">
+	<a
+		href="steam://open/console"
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="mmmfffhgggg valve,,,"
+	>
 		<Image
 			src="/buttons/steam.gif"
 			width={88}
@@ -84,7 +119,12 @@ import { Image } from "astro:assets";
 			fetchpriority="low"
 		/>
 	</a>
-	<a href="steam://launch/70" aria-label="hl1 is the best half life.">
+	<a
+		href="steam://launch/70"
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="hl1 is the best half life."
+	>
 		<Image
 			src="/buttons/newlambda.gif"
 			width={88}
@@ -113,7 +153,9 @@ import { Image } from "astro:assets";
 			img.addEventListener(
 				"load",
 				() => img.classList.add("img-loaded"),
-				{ once: true },
+				{
+					once: true,
+				},
 			);
 	}
 </script>
@@ -126,7 +168,27 @@ import { Image } from "astro:assets";
 			const j = Math.floor(Math.random() * (i + 1));
 			[children[i], children[j]] = [children[j], children[i]];
 		}
+		const own = children.splice(
+			children.findIndex(
+				(c) => c.id === "copy-btn" || c.querySelector?.("#copy-btn"),
+			),
+			1,
+		);
+		children.unshift(...own);
 		children.forEach((child) => container.appendChild(child));
+
+		for (const btn of container.children as HTMLCollectionOf<HTMLElement>) {
+			btn.addEventListener("pointerenter", () => {
+				btn.style.setProperty(
+					"--tilt",
+					`${(Math.random() * 8 - 4).toFixed(2)}deg`,
+				);
+				btn.style.setProperty(
+					"--grow",
+					(1.08 + Math.random() * 0.16).toFixed(3),
+				);
+			});
+		}
 	}
 
 	const copyBtn = document.getElementById("copy-btn");
@@ -156,3 +218,23 @@ import { Image } from "astro:assets";
 		});
 	}
 </script>
+
+<style is:global>
+	#buttons-container > * {
+		position: relative;
+		transition:
+			transform 0.15s ease,
+			z-index 0s;
+	}
+
+	#buttons-container > *:hover {
+		transform: scale(var(--grow, 1.18)) rotate(var(--tilt, -3deg));
+		z-index: 30;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		#buttons-container > *:hover {
+			transform: none;
+		}
+	}
+</style>

@@ -1,13 +1,13 @@
 ---
 import "@fontsource-variable/manrope";
-import AvatarAvif from "../../generated/art/pfp.avif";
-import BannerAvif from "../../generated/art/banner.avif";
 const { title = "mrrrp~" } = Astro.props;
 const oembedUrl = new URL("/meow.json", Astro.url.origin);
+const avatarAvif = "/art/pfp.avif";
+const bannerAvif = "/art/banner.avif";
 ---
 
 <meta charset="utf-8" />
-<meta name="darkreader-lock">
+<meta name="darkreader-lock" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <title>{title}</title>
@@ -15,8 +15,14 @@ const oembedUrl = new URL("/meow.json", Astro.url.origin);
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
-<link rel="preload" as="image" href={AvatarAvif.src} type="image/avif" fetchpriority="high" />
-<link rel="preload" as="image" href={BannerAvif.src} type="image/avif" />
+<link
+	rel="preload"
+	as="image"
+	href={avatarAvif}
+	type="image/avif"
+	fetchpriority="high"
+/>
+<link rel="preload" as="image" href={bannerAvif} type="image/avif" />
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content="http://pandaptable.moe" />

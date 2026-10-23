@@ -1,115 +1,54 @@
 ---
-import { readAssetMetadata } from "../lib/metadata";
 import manifest from "../../generated/manifest.json";
+import { readAssetMetadata } from "../lib/metadata";
 
-const dim = (key: string) =>
-	(manifest as Record<string, { w: number; h: number; c: string }>)[key];
+type Entry = { w: number; h: number; c: string; a: boolean; f: string[] };
+const entries = manifest as Record<string, Entry>;
 
-const sources = {
-	jxl: import.meta.glob<string>("../../generated/ads/*.jxl", {
-		eager: true,
-		query: "?url",
-		import: "default",
-	}),
-	avif: import.meta.glob<string>("../../generated/ads/*.avif", {
-		eager: true,
-		query: "?url",
-		import: "default",
-	}),
-	webp: import.meta.glob<string>("../../generated/ads/*.webp", {
-		eager: true,
-		query: "?url",
-		import: "default",
-	}),
-	gif: import.meta.glob<string>("../../generated/ads/*.gif", {
-		eager: true,
-		query: "?url",
-		import: "default",
-	}),
-	jpg: import.meta.glob<string>("../../generated/ads/*.jpg", {
-		eager: true,
-		query: "?url",
-		import: "default",
-	}),
-	png: import.meta.glob<string>("../../generated/ads/*.png", {
-		eager: true,
-		query: "?url",
-		import: "default",
-	}),
-};
-
-const byName = (mods: Record<string, string>) => {
-	const map = new Map<string, string>();
-	for (const [p, url] of Object.entries(mods)) {
-		const base = p.split("/").pop()?.replace(/\.[^.]+$/, "") ?? "";
-		map.set(base, url);
-	}
-	return map;
-};
-
-const maps = {
-	jxl: byName(sources.jxl),
-	avif: byName(sources.avif),
-	webp: byName(sources.webp),
-	gif: byName(sources.gif),
-	png: byName(sources.png),
-};
-
-const animated = new Set(
-	Object.keys(
-		import.meta.glob("../../generated/ads/*.anim", {
-			eager: true,
-			query: "?url",
-			import: "default",
-		}),
-	).map((p) => p.split("/").pop()?.replace(/\.[^.]+$/, "") ?? ""),
-);
-
-const names = new Set(
-	Object.values(sources).flatMap((mods) =>
-		Object.keys(mods).map((p) => p.split("/").pop()?.replace(/\.[^.]+$/, "") ?? ""),
-	),
-);
+const url = (name: string, ext: string) =>
+	`/ads/${encodeURIComponent(name)}.${ext}`;
 
 const ads = (
 	await Promise.all(
-		[...names]
-			.filter(Boolean)
-			.map(async (name) => {
+		Object.keys(entries)
+			.filter((k) => k.startsWith("ads/"))
+			.map(async (key) => {
+				const name = key.slice(4);
+				const m = entries[key];
+				const has = (ext: string) => m.f.includes(ext);
 				const meta = await readAssetMetadata(name, {
-					generated: "generated/ads",
-					src: "src/assets/ads",
+					dir: "public/ads",
 				});
 				return {
 					name,
-					jxl: maps.jxl.get(name) ?? "",
-					avif: maps.avif.get(name) ?? "",
-					webp: maps.webp.get(name) ?? "",
-					fallback:
-						maps.gif.get(name) ?? maps.png.get(name) ?? "",
+					animated: m.a,
+					jxl: has("jxl") ? url(name, "jxl") : "",
+					avif: has("avif") ? url(name, "avif") : "",
+					webp: has("webp") ? url(name, "webp") : "",
+					fallback: url(
+						name,
+						["gif", "jpg", "png"].find((e) => has(e)) ?? "gif",
+					),
+					skel: m.c,
 					url: meta.url ?? "",
 				};
 			}),
 	)
 ).sort((a, b) => a.name.localeCompare(b.name));
-
 ---
 
-<div
-	class="billboard-frame aspect-[12/5] lg:mt-auto relative rounded-xl border border-ctp-surface1 bg-ctp-mantle shadow-sm hover:border-ctp-mauve transition-colors overflow-hidden p-0.5"
->
-	{
-		ads.map((a, i) => (
-			<a
-				class="billboard"
-				href={a.url || undefined}
-				target="_blank"
-				rel="noopener noreferrer"
-				data-spot={a.name}
-				class:list={[i === 0 && "billboard-on"]}
-			>
-				<picture>
-				{animated.has(a.name) ? (
+<div class="billboard-frame aspect-[12/5] lg:mt-auto relative rounded-xl border border-ctp-surface1 bg-ctp-mantle shadow-sm hover:border-ctp-mauve transition-colors overflow-hidden p-0.5">
+	{ads.map((a, i) => (
+		<a
+			class="billboard"
+			href={a.url || undefined}
+			target="_blank"
+			rel="noopener noreferrer"
+			data-spot={a.name}
+			class:list={[i === 0 && "billboard-on"]}
+		>
+			<picture>
+				{a.animated ? (
 					<>
 						<source srcset={a.avif} type="image/avif" />
 						{a.jxl && <source srcset={a.jxl} type="image/jxl" />}
@@ -122,20 +61,19 @@ const ads = (
 						<source srcset={a.webp} type="image/webp" />
 					</>
 				)}
-					<img
-						src={a.fallback}
-						alt={`billboard: ${a.name}`}
-						data-image-component
-						loading="eager"
-						decoding="async"
-						style={`--skel:${dim(`ads/${a.name}`)?.c ?? "transparent"}`}
-						onload="this.classList.add('img-loaded')"
-						class="h-full w-full object-cover"
-					/>
-				</picture>
-			</a>
-		))
-	}
+				<img
+					src={a.fallback}
+					alt={`billboard: ${a.name}`}
+					data-image-component
+					loading="eager"
+					decoding="async"
+					style={`--skel:${a.skel}`}
+					onload="this.classList.add('img-loaded')"
+					class="h-full w-full object-cover"
+				/>
+			</picture>
+		</a>
+	))}
 </div>
 
 <style is:global>

@@ -41,41 +41,33 @@ const tabCss = tabs
 ---
 
 <Card class="text-ctp-text flex flex-col min-w-0 lg:flex-1 lg:min-h-0">
-	{
-		tabs.map((t, i) => (
-			<input
-				class="page-radio"
-				type="radio"
-				name="page"
-				id={`rad-${t.id}`}
-				data-tab={t.id}
-				checked={i === 0 ? true : undefined}
-			/>
-		))
-	}
-	<div
-		class="tab-bar flex flex-wrap justify-center gap-1 border-b border-ctp-surface1 pb-2 mb-3"
-	>
-		{
-			tabs.map((t) => (
-				<label class="tab-btn" for={`rad-${t.id}`}>
-					{t.id.charAt(0).toUpperCase() + t.id.slice(1)}
-				</label>
-			))
-		}
+	{tabs.map((t, i) => (
+		<input
+			class="page-radio"
+			type="radio"
+			name="page"
+			id={`rad-${t.id}`}
+			data-tab={t.id}
+			checked={i === 0 ? true : undefined}
+		/>
+	))}
+	<div class="tab-bar flex flex-wrap justify-center gap-1 border-b border-ctp-surface1 pb-2 mb-3">
+		{tabs.map((t) => (
+			<label class="tab-btn" for={`rad-${t.id}`}>
+				{t.id.charAt(0).toUpperCase() + t.id.slice(1)}
+			</label>
+		))}
 	</div>
 	<div class="tab-panels grid min-w-0 flex-1 min-h-0">
-		{
-			tabs.map((t) => (
-				<div
-					class="tab-panel prose prose-invert max-w-none text-ctp-text text-lg leading-normal"
-					id={`panel-${t.id}`}
-					data-panel={t.id}
-				>
-					<t.Content />
-				</div>
-			))
-		}
+		{tabs.map((t) => (
+			<div
+				class="tab-panel prose prose-invert max-w-none text-ctp-text text-lg leading-normal"
+				id={`panel-${t.id}`}
+				data-panel={t.id}
+			>
+				<t.Content />
+			</div>
+		))}
 	</div>
 </Card>
 
@@ -96,7 +88,8 @@ const tabCss = tabs
 			target="_blank"
 			rel="noopener noreferrer"
 			aria-label="artist page"
-			hidden></a>
+			hidden
+		></a>
 	</figure>
 </div>
 
