@@ -96,17 +96,17 @@ const ads = (
 ---
 
 <div
-	class="ad-frame aspect-[12/5] lg:mt-auto relative rounded-xl border border-ctp-surface1 bg-ctp-mantle shadow-sm hover:border-ctp-mauve transition-colors overflow-hidden p-0.5"
+	class="billboard-frame aspect-[12/5] lg:mt-auto relative rounded-xl border border-ctp-surface1 bg-ctp-mantle shadow-sm hover:border-ctp-mauve transition-colors overflow-hidden p-0.5"
 >
 	{
 		ads.map((a, i) => (
 			<a
-				class="ad"
+				class="billboard"
 				href={a.url || undefined}
 				target="_blank"
 				rel="noopener noreferrer"
-				data-ad={a.name}
-				class:list={[i === 0 && "ad-active"]}
+				data-spot={a.name}
+				class:list={[i === 0 && "billboard-on"]}
 			>
 				<picture>
 				{animated.has(a.name) ? (
@@ -124,7 +124,7 @@ const ads = (
 				)}
 					<img
 						src={a.fallback}
-						alt={`ad: ${a.name}`}
+						alt={`billboard: ${a.name}`}
 						data-image-component
 						loading="eager"
 						decoding="async"
@@ -139,7 +139,7 @@ const ads = (
 </div>
 
 <style is:global>
-	.ad {
+	.billboard {
 		position: absolute;
 		inset: 0;
 		display: flex;
@@ -152,11 +152,11 @@ const ads = (
 		transition: opacity 0.4s ease;
 	}
 
-	.ad picture {
+	.billboard picture {
 		display: contents;
 	}
 
-	.ad-active {
+	.billboard-on {
 		opacity: 1;
 		pointer-events: auto;
 		z-index: 1;
