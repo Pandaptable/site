@@ -1,6 +1,5 @@
 const sound = new Audio("/wpn_denyselect.wav");
 sound.preload = "auto";
-sound.volume = 0.25;
 
 const isClickable = (el: Element | null) =>
 	el?.closest("a, button, label, summary, [role='button']") != null &&
@@ -10,8 +9,10 @@ document.addEventListener(
 	"click",
 	(e) => {
 		if (!isClickable(e.target as Element)) return;
-		sound.currentTime = 0;
-		void sound.play().catch(() => {});
+		const click = sound.cloneNode() as HTMLAudioElement;
+		click.volume = 0.25;
+		click.addEventListener("ended", () => click.remove());
+		void click.play().catch(() => {});
 	},
 	true,
 );

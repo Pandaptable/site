@@ -124,17 +124,18 @@ for (const job of jobs) {
 			const needGif = !isGif && stale(out("gif"));
 
 			if (needJxl || needAvif || needWebp || needGif) {
-				const probe = path.join(outDir, `.probe-${process.pid}.apng`);
+				const seq = `.probe-${process.pid}-%03d.png`;
 				const rt = path.join(outDir, `.rt-${process.pid}.apng`);
 				try {
 					const fps = getFps(srcPath);
-					run("magick", [srcPath, "-coalesce", probe]);
+					// running into weird random issues on host system lol
+					run("magick", [srcPath, "-coalesce", path.join(outDir, seq)]);
 					run("ffmpeg", [
 						"-y",
+						"-framerate",
+						fps.toFixed(4),
 						"-i",
-						probe,
-						"-vf",
-						`fps=${fps.toFixed(4)}`,
+						path.join(outDir, seq),
 						"-plays",
 						"0",
 						rt,
@@ -182,13 +183,16 @@ for (const job of jobs) {
 						run("ffmpeg", [
 							"-y",
 							"-i",
-							probe,
+							rt,
 							"-vf",
 							`fps=${Math.min(fps, 50).toFixed(2)}`,
 							out("gif"),
 						]);
 				} catch {}
-				rm(probe, rt);
+				rm(rt);
+				for (const f of fs.readdirSync(outDir)) {
+					if (f.startsWith(`.probe-${process.pid}`)) rm(path.join(outDir, f));
+				}
 			}
 			generated++;
 		} else {
