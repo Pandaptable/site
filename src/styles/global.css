@@ -49,7 +49,10 @@
 .missing-texture::after {
 	content: "";
 	position: fixed;
-	inset: 0;
+	top: calc(-1 * var(--checkerboard-size));
+	left: calc(-1 * var(--checkerboard-size));
+	width: calc(100vw + (var(--checkerboard-size) * 2));
+	height: calc(100vh + (var(--checkerboard-size) * 2));
 	pointer-events: none;
 
 	z-index: -1;
