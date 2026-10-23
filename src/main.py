@@ -13,6 +13,7 @@ from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from anilist import fetch_anilist_data
 from utils import Website
 
 
@@ -164,6 +165,11 @@ async def meow_json():
 		"version": "1.0",
 		"author_name": f"{website.age} y/o catgirl",
 	}
+
+
+@app.get("/anilist")
+async def anilist_route():
+	return await fetch_anilist_data()
 
 
 app.mount("/", StaticFiles(directory="dist", html=True), name="static")

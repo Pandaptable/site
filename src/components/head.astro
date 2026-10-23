@@ -1,5 +1,8 @@
 ---
-const { title = "mrrrp~", ...props } = Astro.props;
+import "@fontsource-variable/manrope";
+import AvatarAvif from "../../generated/art/pfp.avif";
+import BannerAvif from "../../generated/art/banner.avif";
+const { title = "mrrrp~" } = Astro.props;
 const oembedUrl = new URL("/meow.json", Astro.url.origin);
 ---
 
@@ -12,11 +15,8 @@ const oembedUrl = new URL("/meow.json", Astro.url.origin);
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
-<link rel="preconnect" href="https://api.fonts.coollabs.io " />
-<link
-	href="https://api.fonts.coollabs.io/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
-	rel="stylesheet"
-/>
+<link rel="preload" as="image" href={AvatarAvif.src} type="image/avif" fetchpriority="high" />
+<link rel="preload" as="image" href={BannerAvif.src} type="image/avif" />
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content="http://pandaptable.moe" />

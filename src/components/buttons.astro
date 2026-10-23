@@ -4,12 +4,14 @@ import { Image } from "astro:assets";
 
 <div class="flex flex-wrap gap-1" id="buttons-container">
 	<div class="relative group w-22 h-7.75">
-		<a href="https://pandaptable.moe">
+	<a href="https://pandaptable.moe" aria-label="pandaptable.moe">
 			<Image
 				src="/buttons/button.avif"
 				width={88}
 				height={31}
 				alt="pandaptable.moe"
+				loading="eager"
+				fetchpriority="low"
 			/>
 		</a>
 
@@ -22,50 +24,74 @@ import { Image } from "astro:assets";
 			Copy
 		</button>
 	</div>
-	<a href="https://panley.みんな">
-		<Image
-			src="/buttons/panley.png"
-			width={88}
-			height={31}
-			alt="the panler"
-		/>
-	</a>
-	<a href="https://estro.gay">
-		<Image src="/buttons/lexi.png" width={88} height={31} alt="lexi :3" />
-	</a>
-	<a href="https://azzie.gay">
-		<Image src="/buttons/azzie.png" width={88} height={31} alt="azzie ;3" />
-	</a>
-	<a href="https://mauve.beer">
+	<a href="https://mauve.beer" aria-label="mauve">
 		<Image
 			src="https://lumap.xyz/button.png"
 			width={88}
 			height={31}
 			alt="mauve"
+			loading="eager"
+			fetchpriority="low"
 		/>
 	</a>
-	<a href="https://tilde.town/~azee">
+	<a href="https://emerald.moe" aria-label="emerald">
+		<img
+			src="/buttons/emerald.svg"
+			width={88}
+			height={31}
+			alt="emerald"
+			loading="eager"
+			fetchpriority="low"
+		/>
+	</a>
+	<a href="https://azee.sh" aria-label="azee">
 		<Image
-			src="https://tilde.town/~azee/images/web-badge.gif"
+			src="https://azee.sh/images/web-badge.gif"
 			width={88}
 			height={31}
 			alt="azee"
+			loading="eager"
+			fetchpriority="low"
 		/>
 	</a>
-	<a href="https://rubesxf.neocities.org/">
+	<a href="https://slonk.ing" aria-label="slonk ;3">
 		<Image
-			src="https://rubesxf.neocities.org/images/ruby-button.gif"
+			src="https://slonk.ing/img/88x31.webp"
 			width={88}
 			height={31}
-			alt="ruby ;3"
+			alt="slonk ;3"
+			loading="eager"
+			fetchpriority="low"
 		/>
 	</a>
-	<a href="https://steamcommunity.com">
+	<a href="https://byeoon.dev/" aria-label="byeoon">
+		<Image
+			src="https://byeoon.dev/img/button.png"
+			width={88}
+			height={31}
+			alt="byeoon"
+			loading="eager"
+			fetchpriority="low"
+		/>
+	</a>
+	<a href="steam://open/console" aria-label="mmmfffhgggg valve,,,">
 		<Image
 			src="/buttons/steam.gif"
 			width={88}
 			height={31}
 			alt="mmmfffhgggg valve,,,"
+			loading="eager"
+			fetchpriority="low"
+		/>
+	</a>
+	<a href="steam://launch/70" aria-label="hl1 is the best half life.">
+		<Image
+			src="/buttons/newlambda.gif"
+			width={88}
+			height={31}
+			alt="hl1 is the best half life."
+			loading="eager"
+			fetchpriority="low"
 		/>
 	</a>
 	<Image
@@ -73,14 +99,24 @@ import { Image } from "astro:assets";
 		width={88}
 		height={31}
 		alt="haiiiii ;3"
-	/>
-	<Image
-		src="/buttons/newlambda.gif"
-		width={88}
-		height={31}
-		alt="hl1 is the best half life."
+		loading="eager"
+		fetchpriority="low"
 	/>
 </div>
+
+<script>
+	for (const img of document.querySelectorAll<HTMLImageElement>(
+		"img[data-image-component]",
+	)) {
+		if (img.complete) img.classList.add("img-loaded");
+		else
+			img.addEventListener(
+				"load",
+				() => img.classList.add("img-loaded"),
+				{ once: true },
+			);
+	}
+</script>
 
 <script>
 	const container = document.getElementById("buttons-container");

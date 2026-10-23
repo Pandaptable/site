@@ -1,4 +1,11 @@
 FROM oven/bun:alpine AS base
+RUN apk add --no-cache \
+	imagemagick \
+	imagemagick-heic \
+	imagemagick-jxl \
+	exiftool \
+	ffmpeg \
+	libjxl-tools
 WORKDIR /app
 
 COPY package.json bun.lockb* ./

@@ -4,7 +4,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-	--font-sans: "Figtree", sans-serif;
+	--font-sans: "Manrope Variable", "Figtree", sans-serif;
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+	html {
+		font-size: clamp(13px, calc(0.55vw + 7.5px), 16px);
+	}
 }
 
 .missing-texture {

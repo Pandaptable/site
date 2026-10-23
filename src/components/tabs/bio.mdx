@@ -1,0 +1,30 @@
+import { Image } from "astro:assets";
+import BannerAvif from "../../../generated/art/banner.avif";
+import BannerJpg from "../../../generated/art/banner.jpg";
+import BannerWebp from "../../../generated/art/banner.webp";
+
+i'm nemmy, a %%AGE%% y/o woman too autistic about source engine.<br/>
+could you tell i like source. and missing texture :3
+<br/>
+<a href="https://github.com/ValveSoftware/source-sdk-2013/pulls?q=sort%3Aupdated-desc+is%3Apr+state%3Amerged+author%3APandaptable" class="text-ctp-mauve hover:text-ctp-mauve/80 underline decoration-ctp-mauve/30 hover:decoration-ctp-mauve transition-colors">tf2 contributor</a> btw
+<br/>
+lowkey really hate programming but usually do things i find useful like <a href="https://github.com/Pandaptable/iClientTimeline-hook" class="text-ctp-mauve hover:text-ctp-mauve/80 underline decoration-ctp-mauve/30 hover:decoration-ctp-mauve transition-colors">this</a>...<br/>
+or! i get super autistic about one random thing for a year and end up reversing the hash of every single <a href="https://github.com/Pandaptable/source2-launch-options" class="text-ctp-mauve hover:text-ctp-mauve/80 underline decoration-ctp-mauve/30 hover:decoration-ctp-mauve transition-colors">source 2 launch option</a>!
+<br/>
+potentially open to commissions! feel free to reach out- unlikely to do anything i don't find interesting tho.. discord / osmium preferred.
+<br />
+<picture>
+{/* <source srcset={BannerJxl} type="image/jxl" /> */}
+	<source srcset={BannerAvif.src} type="image/avif" />
+	<source srcset={BannerWebp.src} type="image/webp" />
+	<img
+		src={BannerJpg.src}
+		alt="banner"
+	onload="this.classList.add('img-loaded')"
+		class="rounded-xl w-full"
+		loading="eager"
+		fetchpriority="high"
+		width={680}
+		height={240}
+	/>
+</picture>

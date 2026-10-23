@@ -1,0 +1,105 @@
+---
+import "../styles/tabs.css";
+import Card from "./card.astro";
+
+const pages = import.meta.glob(["./tabs/*.mdx", "./tabs/*.astro"], {
+	eager: true,
+});
+const tabs = Object.entries(pages)
+	.map(([path, mod]) => ({
+		id:
+			path
+				.split("/")
+				.pop()
+				?.replace(/\.(mdx|astro)$/, "") ?? "",
+		Content: (mod as { default: any }).default,
+	}))
+	.filter((t) => t.id)
+	.sort((a, b) =>
+		a.id === b.id
+			? 0
+			: a.id === "bio"
+				? -1
+				: b.id === "bio"
+					? 1
+					: a.id.localeCompare(b.id),
+	);
+
+const tabCss = tabs
+	.map(
+		(t) => `
+	#rad-${t.id}:checked ~ .tab-bar label[for="rad-${t.id}"] {
+		color: var(--color-ctp-mauve);
+		border-color: var(--color-ctp-mauve);
+		background: rgba(255, 255, 255, 0.05);
+	}
+	#rad-${t.id}:checked ~ .tab-panels #panel-${t.id} {
+		opacity: 1;
+	}`,
+	)
+	.join("\n");
+---
+
+<Card class="text-ctp-text flex flex-col min-w-0 lg:flex-1 lg:min-h-0">
+	{
+		tabs.map((t, i) => (
+			<input
+				class="page-radio"
+				type="radio"
+				name="page"
+				id={`rad-${t.id}`}
+				data-tab={t.id}
+				checked={i === 0 ? true : undefined}
+			/>
+		))
+	}
+	<div
+		class="tab-bar flex flex-wrap justify-center gap-1 border-b border-ctp-surface1 pb-2 mb-3"
+	>
+		{
+			tabs.map((t) => (
+				<label class="tab-btn" for={`rad-${t.id}`}>
+					{t.id.charAt(0).toUpperCase() + t.id.slice(1)}
+				</label>
+			))
+		}
+	</div>
+	<div class="tab-panels grid min-w-0 flex-1 min-h-0">
+		{
+			tabs.map((t) => (
+				<div
+					class="tab-panel prose prose-invert max-w-none text-ctp-text text-lg leading-normal"
+					id={`panel-${t.id}`}
+					data-panel={t.id}
+				>
+					<t.Content />
+				</div>
+			))
+		}
+	</div>
+</Card>
+
+<div
+	class="lightbox"
+	id="lightbox"
+	hidden
+	tabindex="-1"
+	role="dialog"
+	aria-modal="true"
+	aria-label="image viewer"
+>
+	<figure class="m-0">
+		<figcaption></figcaption>
+		<a
+			class="lightbox-artist"
+			href="#"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="artist page"
+			hidden></a>
+	</figure>
+</div>
+
+<script src="../scripts/tabs.ts"></script>
+
+<style is:global set:html={tabCss}></style>

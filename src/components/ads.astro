@@ -1,0 +1,166 @@
+---
+import { readAssetMetadata } from "../lib/metadata";
+import manifest from "../../generated/manifest.json";
+
+const dim = (key: string) =>
+	(manifest as Record<string, { w: number; h: number; c: string }>)[key];
+
+const sources = {
+	jxl: import.meta.glob<string>("../../generated/ads/*.jxl", {
+		eager: true,
+		query: "?url",
+		import: "default",
+	}),
+	avif: import.meta.glob<string>("../../generated/ads/*.avif", {
+		eager: true,
+		query: "?url",
+		import: "default",
+	}),
+	webp: import.meta.glob<string>("../../generated/ads/*.webp", {
+		eager: true,
+		query: "?url",
+		import: "default",
+	}),
+	gif: import.meta.glob<string>("../../generated/ads/*.gif", {
+		eager: true,
+		query: "?url",
+		import: "default",
+	}),
+	jpg: import.meta.glob<string>("../../generated/ads/*.jpg", {
+		eager: true,
+		query: "?url",
+		import: "default",
+	}),
+	png: import.meta.glob<string>("../../generated/ads/*.png", {
+		eager: true,
+		query: "?url",
+		import: "default",
+	}),
+};
+
+const byName = (mods: Record<string, string>) => {
+	const map = new Map<string, string>();
+	for (const [p, url] of Object.entries(mods)) {
+		const base = p.split("/").pop()?.replace(/\.[^.]+$/, "") ?? "";
+		map.set(base, url);
+	}
+	return map;
+};
+
+const maps = {
+	jxl: byName(sources.jxl),
+	avif: byName(sources.avif),
+	webp: byName(sources.webp),
+	gif: byName(sources.gif),
+	png: byName(sources.png),
+};
+
+const animated = new Set(
+	Object.keys(
+		import.meta.glob("../../generated/ads/*.anim", {
+			eager: true,
+			query: "?url",
+			import: "default",
+		}),
+	).map((p) => p.split("/").pop()?.replace(/\.[^.]+$/, "") ?? ""),
+);
+
+const names = new Set(
+	Object.values(sources).flatMap((mods) =>
+		Object.keys(mods).map((p) => p.split("/").pop()?.replace(/\.[^.]+$/, "") ?? ""),
+	),
+);
+
+const ads = (
+	await Promise.all(
+		[...names]
+			.filter(Boolean)
+			.map(async (name) => {
+				const meta = await readAssetMetadata(name, {
+					generated: "generated/ads",
+					src: "src/assets/ads",
+				});
+				return {
+					name,
+					jxl: maps.jxl.get(name) ?? "",
+					avif: maps.avif.get(name) ?? "",
+					webp: maps.webp.get(name) ?? "",
+					fallback:
+						maps.gif.get(name) ?? maps.png.get(name) ?? "",
+					url: meta.url ?? "",
+				};
+			}),
+	)
+).sort((a, b) => a.name.localeCompare(b.name));
+
+---
+
+<div
+	class="ad-frame aspect-[12/5] lg:mt-auto relative rounded-xl border border-ctp-surface1 bg-ctp-mantle shadow-sm hover:border-ctp-mauve transition-colors overflow-hidden p-0.5"
+>
+	{
+		ads.map((a, i) => (
+			<a
+				class="ad"
+				href={a.url || undefined}
+				target="_blank"
+				rel="noopener noreferrer"
+				data-ad={a.name}
+				class:list={[i === 0 && "ad-active"]}
+			>
+				<picture>
+				{animated.has(a.name) ? (
+					<>
+						<source srcset={a.avif} type="image/avif" />
+						{a.jxl && <source srcset={a.jxl} type="image/jxl" />}
+						<source srcset={a.webp} type="image/webp" />
+					</>
+				) : (
+					<>
+						{a.jxl && <source srcset={a.jxl} type="image/jxl" />}
+						<source srcset={a.avif} type="image/avif" />
+						<source srcset={a.webp} type="image/webp" />
+					</>
+				)}
+					<img
+						src={a.fallback}
+						alt={`ad: ${a.name}`}
+						data-image-component
+						loading="eager"
+						decoding="async"
+						style={`--skel:${dim(`ads/${a.name}`)?.c ?? "transparent"}`}
+						onload="this.classList.add('img-loaded')"
+						class="h-full w-full object-cover"
+					/>
+				</picture>
+			</a>
+		))
+	}
+</div>
+
+<style is:global>
+	.ad {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		border-radius: 0.375rem;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.4s ease;
+	}
+
+	.ad picture {
+		display: contents;
+	}
+
+	.ad-active {
+		opacity: 1;
+		pointer-events: auto;
+		z-index: 1;
+	}
+</style>
+
+<script src="../scripts/ads.ts"></script>

@@ -1,0 +1,9 @@
+node_modules
+dist
+.astro
+generated
+art-backup
+img-backup
+.git
+*.log
+*.zip

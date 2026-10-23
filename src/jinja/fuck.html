@@ -134,17 +134,15 @@
 		section.style.height = window.innerHeight + "px";
 		section.style.width = window.innerWidth + "px";
 	});
-	title = "fuck {{x}} ";
-	position = 0;
-	function scrolltitle() {
-		{
-			document.title = title.substring(position, title.length) + title.substring(0, position);
-			position++;
-			if (position > title.length) position = 0;
-			titleScroll = window.setTimeout(scrolltitle, 200);
-		}
+	if (!window.__titleMarquee) {
+		window.__titleMarquee = true;
+		const BLANK = "\u2800";
+		let text = `fuck {{x}}${BLANK}${BLANK}`;
+		setInterval(() => {
+			text = text.substring(1) + text[0];
+			document.title = text;
+		}, 180);
 	}
-	scrolltitle();
 </script>
 
 </html>

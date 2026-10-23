@@ -1,0 +1,348 @@
+.profile-avatar-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.discord-color-dot {
+	position: absolute;
+	inset: -3px;
+	border-radius: 50%;
+	border: 3px solid #a6adc8;
+	pointer-events: none;
+	z-index: 1;
+	transition: border-color 0.3s ease;
+}
+
+.discord-rpc {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex: none;
+	border-radius: 0.75rem;
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid var(--color-ctp-surface0);
+	margin-top: 0.5rem;
+	width: 100%;
+	text-align: left;
+	height: 9rem;
+}
+
+.discord-rpc.rpc-idle .discord-rpc-content {
+	justify-content: center;
+	text-align: center;
+}
+
+.discord-rpc.rpc-idle .discord-rpc-images {
+	display: none;
+}
+.rpc-error {
+	position: absolute;
+	inset: 0;
+	display: none;
+	overflow: hidden;
+	border-radius: 0.75rem;
+	pointer-events: none;
+}
+
+.discord-rpc.rpc-idle .rpc-error {
+	display: block;
+}
+
+.discord-rpc.rpc-3d .discord-rpc-info {
+	display: none;
+}
+
+.rpc-static-error {
+	color: #ff0000;
+	font-weight: 900;
+	font-size: 1.25rem;
+	letter-spacing: 0.05em;
+}
+
+.rpc-static-hint {
+	color: var(--color-ctp-subtext0);
+	font-size: 0.6875rem;
+}
+
+.discord-rpc.rpc-idle .discord-activity {
+	color: var(--color-ctp-subtext1);
+	font-weight: 500;
+}
+
+.discord-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+	background: var(--color-ctp-surface0);
+	border: 1px solid var(--color-ctp-surface1);
+	color: var(--color-ctp-subtext0);
+	border-radius: 50%;
+	width: 1.25rem;
+	height: 1.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	padding: 0;
+	transition: all 0.15s ease;
+	opacity: 0;
+}
+
+.discord-rpc:hover .discord-nav {
+	opacity: 1;
+}
+
+.discord-nav:hover {
+	background: var(--color-ctp-surface1);
+	color: var(--color-ctp-mauve);
+	border-color: var(--color-ctp-mauve);
+}
+
+.discord-nav-left {
+	left: -0.375rem;
+}
+
+.discord-nav-right {
+	right: -0.375rem;
+}
+
+.discord-rpc-content {
+	display: flex;
+	gap: 0.625rem;
+	padding: 0.5rem;
+	align-items: center;
+	min-height: 0;
+}
+
+.discord-progress {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 3px;
+	background: var(--color-ctp-surface0);
+	border-radius: 0 0 0.75rem 0.75rem;
+	overflow: hidden;
+}
+
+.discord-progress-bar {
+	height: 100%;
+	width: 0%;
+	background: var(--color-ctp-mauve);
+	border-radius: 0 2px 2px 0;
+	transition: width 1s linear;
+}
+
+.discord-rpc-images {
+	position: relative;
+	width: 5.5rem;
+	min-width: 5.5rem;
+	height: 5.5rem;
+}
+
+.discord-image-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.discord-large-image {
+	width: 100%;
+	height: 100%;
+	border-radius: 8px;
+	background-size: cover;
+	background-position: center;
+}
+
+.discord-small-image {
+	position: absolute;
+	bottom: -3px;
+	right: -3px;
+	width: 32%;
+	height: 32%;
+	border-radius: 50%;
+	background-size: cover;
+	background-position: center;
+	z-index: 1;
+}
+
+.discord-rpc-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.125rem;
+	min-width: 0;
+}
+
+.discord-status-text {
+	color: var(--color-ctp-subtext0);
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.025em;
+	font-weight: 600;
+}
+
+.discord-activity {
+	color: var(--color-ctp-text);
+	font-size: 1rem;
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.discord-details,
+.discord-state {
+	color: var(--color-ctp-subtext1);
+	font-size: 0.8125rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.discord-timestamp {
+	color: var(--color-ctp-subtext0);
+	font-size: 0.75rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.socials-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 0.375rem;
+	width: 100%;
+	margin-top: 0.75rem;
+}
+
+.socials-grid a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.5rem 0;
+	border-radius: 0.5rem;
+	color: var(--color-ctp-subtext0);
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid transparent;
+	transition: all 0.15s ease;
+}
+
+.socials-grid a:hover {
+	color: var(--color-ctp-mauve);
+	background: rgba(255, 255, 255, 0.06);
+	border-color: var(--color-ctp-mauve);
+}
+
+.socials-grid svg {
+	width: 1.75rem;
+	height: 1.75rem;
+}
+
+@media (min-width: 1024px) and (max-height: 800px) {
+	.profile-avatar-wrapper img {
+		width: 9rem;
+		height: 9rem;
+	}
+
+	.discord-rpc {
+		height: 8rem;
+	}
+
+	.discord-status-text,
+	.discord-timestamp {
+		font-size: 0.6875rem;
+	}
+
+	.discord-activity {
+		font-size: 0.875rem;
+	}
+
+	.discord-details,
+	.discord-state {
+		font-size: 0.75rem;
+	}
+
+	.discord-rpc-images {
+		width: 4.5rem;
+		min-width: 4.5rem;
+		height: 4.5rem;
+	}
+}
+
+@media (min-width: 1024px) and (max-height: 750px) {
+	.profile-avatar-wrapper img {
+		width: 7rem;
+		height: 7rem;
+	}
+
+	.discord-rpc {
+		height: 7.25rem;
+	}
+
+	.discord-status-text,
+	.discord-timestamp {
+		font-size: 0.625rem;
+	}
+
+	.discord-activity {
+		font-size: 0.8125rem;
+	}
+
+	.discord-details,
+	.discord-state {
+		font-size: 0.6875rem;
+	}
+
+	.discord-rpc-images {
+		width: 4rem;
+		min-width: 4rem;
+		height: 4rem;
+	}
+}
+
+.rpc-text {
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.rpc-scroll {
+	animation: rpc-marquee var(--rpc-scroll-duration, 8s) ease-in-out infinite
+		alternate;
+}
+
+@keyframes rpc-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(var(--rpc-scroll-dist, 0px));
+	}
+}
+
+.discord-activity:has(.rpc-scroll),
+.discord-details:has(.rpc-scroll),
+.discord-state:has(.rpc-scroll) {
+	text-overflow: clip;
+}
+
+img[data-image-component] {
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+img[data-image-component]:not(.img-loaded) {
+	background: var(--skel, transparent);
+}
+
+img[data-image-component].img-loaded {
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	img[data-image-component] {
+		transition: none;
+	}
+}

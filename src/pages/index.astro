@@ -1,30 +1,27 @@
 ---
-import Anilist from "../components/anilist.astro";
-import Bio from "../components/bio.astro";
+import Ads from "../components/ads.astro";
 import Buttons from "../components/buttons.astro";
 import Card from "../components/card.astro";
-import Icons from "../components/icons.astro";
 import Profile from "../components/profile.astro";
+import Tabs from "../components/tabs.astro";
 import Layout from "../layouts/layout.astro";
 import "../styles/global.css";
 ---
 
 <Layout>
 	<main
-		class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 grid grid-cols-2 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-3 auto-rows-[minmax(100px,auto)]"
+		class="mx-auto max-w-7xl px-4 py-4 grid gap-3 lg:min-h-dvh lg:content-center lg:items-start lg:grid-cols-[22rem_minmax(0,1fr)]"
 	>
-		<Profile />
-		<Bio />
-		<Anilist />
-		<Icons />
-		<Card
-			title="Buttons"
-			subtext="hover over mine to copy ;3"
-			class="row-span-2 col-span-2 md:col-span-6 lg:col-span-8 text-ctp-text"
-		>
+		<div class="lg:self-stretch flex flex-col gap-3 min-w-0">
+			<Profile />
+			<Ads />
+		</div>
+		<div class="lg:self-stretch flex flex-col gap-3 min-w-0">
+			<Tabs />
+		</div>
+		<Card class="lg:col-span-2">
 			<Buttons />
 		</Card>
-		<!-- <Slippi />-->
 	</main>
 	<footer class="fixed bottom-4 right-4 z-50">
 		<a
