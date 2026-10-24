@@ -24,43 +24,36 @@ const jobs = [
 	},
 ];
 
-const variantExts = new Set([
-	".anim",
-	".avif",
-	".webp",
-	".jpg",
-	".jxl",
-	".gif",
-]);
+const variantExts = new Set([".avif", ".webp", ".jpg", ".jxl", ".gif"]);
 
 const run = (cmd, args) =>
 	execFileSync(cmd, args, { stdio: "pipe" }).toString().trim();
 const rm = (...files) => files.forEach((f) => fs.rmSync(f, { force: true }));
 const mtime = (f) => fs.statSync(f).mtimeMs;
 
-const getFps = (f) => {
+const getFps = (f, frames) => {
 	try {
-		const [n, d] = run("ffprobe", [
-			"-v",
-			"error",
-			"-select_streams",
-			"v:0",
-			"-show_entries",
-			"stream=avg_frame_rate",
-			"-of",
-			"default=nw=1:nk=1",
-			f,
-		])
-			.split("/")
-			.map(Number);
-		if (n > 0 && d > 0) return n / d;
-	} catch {}
-	try {
-		const t = Number(
-			run("magick", ["identify", "-format", "%T", `${f}[0]`]),
+		const duration = Number(
+			run("ffprobe", [
+				"-v",
+				"error",
+				"-show_entries",
+				"format=duration",
+				"-of",
+				"default=nw=1:nk=1",
+				f,
+			]),
 		);
-		if (t > 0) return 100 / t;
-	} catch {}
+		if (duration > 0 && frames > 1) return frames / duration;
+	} catch { }
+	if (/\.gif$/i.test(f)) {
+		try {
+			const t = Number(
+				run("magick", ["identify", "-format", "%T", `${f}[0]`]),
+			);
+			if (t > 0) return 100 / t;
+		} catch { }
+	}
 	return 50;
 };
 
@@ -76,7 +69,6 @@ for (const job of jobs) {
 	const files = fs.readdirSync(srcDir).filter((f) => job.pattern.test(f));
 	const validBases = new Set(files.map((f) => path.parse(f).name));
 
-	// prune only OUR generated variants whose source is gone
 	for (const outFile of fs.readdirSync(outDir)) {
 		const parsed = path.parse(outFile);
 		if (parsed.name.startsWith(".")) continue;
@@ -100,21 +92,16 @@ for (const job of jobs) {
 			mtime(p) < srcTime;
 
 		const out = (e) => path.join(outDir, `${base}.${e}`);
-		let animated = false;
+		let frames = 1;
 		try {
-			animated =
-				run("magick", ["identify", srcPath]).split("\n").length > 1;
-		} catch {}
-
-		const formats = [];
+			frames = run("magick", ["identify", srcPath]).split("\n").length;
+		} catch { }
+		const animated = frames > 1;
 
 		if (animated) {
-			fs.writeFileSync(out("anim"), "");
-			formats.push("anim");
 			rm(out("jpg"));
 			if (stale(out(ext.slice(1))))
 				fs.copyFileSync(srcPath, out(ext.slice(1)));
-			formats.push(ext.slice(1));
 
 			const needJxl = ext !== ".jxl" && stale(out("jxl"));
 			const needAvif = ext !== ".avif" && stale(out("avif"));
@@ -122,15 +109,14 @@ for (const job of jobs) {
 			const needGif = !isGif && stale(out("gif"));
 
 			if (needJxl || needAvif || needWebp || needGif) {
-				const seq = `.probe-${process.pid}-%03d.png`;
+				const seq = `probe-${process.pid}-%03d.png`;
 				const rt = path.join(outDir, `.rt-${process.pid}.apng`);
 				try {
-					const fps = getFps(srcPath);
-					// running into weird random issues on host system lol
+					const fps = getFps(srcPath, frames);
 					run("magick", [
 						srcPath,
 						"-coalesce",
-						path.join(outDir, seq),
+						`PNG32:${path.join(outDir, seq)}`,
 					]);
 					run("ffmpeg", [
 						"-y",
@@ -144,15 +130,16 @@ for (const job of jobs) {
 					]);
 
 					if (needJxl)
-						run("cjxl", [
-							rt,
-							out("jxl"),
-							"-d",
-							job.ads ? "3" : "1",
-							"-e",
-							"7",
-							"--quiet",
-						]);
+						if (needJxl)
+							run("cjxl", [
+								rt,
+								out("jxl"),
+								"-d",
+								job.ads ? "3" : "1",
+								"-e",
+								"7",
+								"--quiet",
+							]);
 					if (needAvif)
 						run("ffmpeg", [
 							"-y",
@@ -190,37 +177,36 @@ for (const job of jobs) {
 							`fps=${Math.min(fps, 50).toFixed(2)}`,
 							out("gif"),
 						]);
-				} catch {}
+				} catch { }
 				rm(rt);
 				for (const f of fs.readdirSync(outDir)) {
-					if (f.startsWith(`.probe-${process.pid}`))
+					if (f.startsWith(`probe-${process.pid}`))
 						rm(path.join(outDir, f));
 				}
 			}
 			generated++;
 		} else {
-			rm(out("anim"));
 			if (!isGif) rm(out("gif"));
 
 			const encodes = isGif
 				? [
-						["avif", ["-quality", "60"]],
-						["webp", ["-quality", "60"]],
-					]
+					["avif", ["-quality", "60"]],
+					["webp", ["-quality", "60"]],
+				]
 				: [
-						["avif", ["-quality", "85"]],
-						["webp", ["-quality", "90"]],
+					["avif", ["-quality", "85"]],
+					["webp", ["-quality", "90"]],
+					[
+						"jpg",
 						[
-							"jpg",
-							[
-								"-quality",
-								"92",
-								"-background",
-								"#11111b",
-								"-flatten",
-							],
+							"-quality",
+							"92",
+							"-background",
+							"#11111b",
+							"-flatten",
 						],
-					];
+					],
+				];
 
 			for (const [fExt, args] of encodes) {
 				if (stale(out(fExt))) {

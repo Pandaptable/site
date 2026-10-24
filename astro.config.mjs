@@ -67,7 +67,7 @@ const formatVariants = () => ({
 				)
 					return;
 				if (!fs.existsSync(changedPath)) return;
-				if (norm.includes(".probe-") || norm.includes(".rt-")) return;
+				if (norm.includes("probe-") || norm.includes(".rt-")) return;
 				clearTimeout(timer);
 				timer = setTimeout(() => {
 					try {
