@@ -1,0 +1,27 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+	url: string;
+	link?: string;
+	alt: string;
+}
+
+const { url, link, alt } = Astro.props;
+---
+
+<a
+	href={link}
+	target={link ? "_blank" : undefined}
+	rel={link ? "noopener" : undefined}
+	aria-label={alt}
+>
+	<Image
+		src={url}
+		width={88}
+		height={31}
+		alt={alt}
+		loading="eager"
+		fetchpriority="low"
+	/>
+</a>

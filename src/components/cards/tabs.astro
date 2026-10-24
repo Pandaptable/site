@@ -1,6 +1,6 @@
 ---
-import "../styles/tabs.css";
-import Card from "./card.astro";
+import "../../styles/tabs.css";
+import Card from "../card.astro";
 
 const pages = import.meta.glob(["./tabs/*.mdx", "./tabs/*.astro"], {
 	eager: true,
@@ -86,13 +86,13 @@ const tabCss = tabs
 			class="lightbox-artist"
 			href="#"
 			target="_blank"
-			rel="noopener noreferrer"
+			rel="noopener"
 			aria-label="artist page"
 			hidden
 		></a>
 	</figure>
 </div>
 
-<script src="../scripts/tabs.ts"></script>
+<script src="../../scripts/tabs.ts"></script>
 
 <style is:global set:html={tabCss}></style>

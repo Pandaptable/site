@@ -1,24 +1,14 @@
 ---
-import { Image } from "astro:assets";
+import Button from "../button.astro";
 ---
 
 <div class="flex flex-wrap gap-1" id="buttons-container">
 	<div class="relative group w-22 h-7.75">
-		<a
-			href="https://pandaptable.moe"
-			target="_blank"
-			rel="noopener noreferrer"
-			aria-label="pandaptable.moe"
-		>
-			<Image
-				src="/buttons/button.avif"
-				width={88}
-				height={31}
-				alt="pandaptable.moe"
-				loading="eager"
-				fetchpriority="low"
-			/>
-		</a>
+		<Button
+			url="/buttons/button.avif"
+			link="https://pandaptable.moe"
+			alt="pandaptable.moe"
+		/>
 
 		<button
 			id="copy-btn"
@@ -29,119 +19,42 @@ import { Image } from "astro:assets";
 			Copy
 		</button>
 	</div>
-	<a
-		href="https://mauve.beer"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="mauve"
-	>
-		<Image
-			src="https://lumap.xyz/button.png"
-			width={88}
-			height={31}
-			alt="mauve"
-			loading="eager"
-			fetchpriority="low"
-		/>
-	</a>
-	<a
-		href="https://emerald.moe"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="emerald"
-	>
-		<img
-			src="/buttons/emerald.svg"
-			width={88}
-			height={31}
-			alt="emerald"
-			loading="eager"
-			fetchpriority="low"
-		/>
-	</a>
-	<a
-		href="https://azee.sh"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="azee"
-	>
-		<Image
-			src="https://azee.sh/images/web-badge.gif"
-			width={88}
-			height={31}
-			alt="azee"
-			loading="eager"
-			fetchpriority="low"
-		/>
-	</a>
-	<a
-		href="https://slonk.ing"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="slonk ;3"
-	>
-		<Image
-			src="https://slonk.ing/img/88x31.webp"
-			width={88}
-			height={31}
-			alt="slonk ;3"
-			loading="eager"
-			fetchpriority="low"
-		/>
-	</a>
-	<a
-		href="https://byeoon.dev/"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="byeoon"
-	>
-		<Image
-			src="https://byeoon.dev/img/button.png"
-			width={88}
-			height={31}
-			alt="byeoon"
-			loading="eager"
-			fetchpriority="low"
-		/>
-	</a>
-	<a
-		href="steam://open/console"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="mmmfffhgggg valve,,,"
-	>
-		<Image
-			src="/buttons/steam.gif"
-			width={88}
-			height={31}
-			alt="mmmfffhgggg valve,,,"
-			loading="eager"
-			fetchpriority="low"
-		/>
-	</a>
-	<a
-		href="steam://launch/70"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="hl1 is the best half life."
-	>
-		<Image
-			src="/buttons/newlambda.gif"
-			width={88}
-			height={31}
-			alt="hl1 is the best half life."
-			loading="eager"
-			fetchpriority="low"
-		/>
-	</a>
-	<Image
-		src="/buttons/hellokitty.gif"
-		width={88}
-		height={31}
-		alt="haiiiii ;3"
-		loading="eager"
-		fetchpriority="low"
+	<Button
+		url="https://lumap.xyz/button.png"
+		link="https://mauve.beer"
+		alt="mauve"
 	/>
+	<Button
+		url="/buttons/emerald.svg"
+		link="https://emerald.moe"
+		alt="emerald"
+	/>
+	<Button
+		url="https://azee.sh/images/web-badge.gif"
+		link="https://azee.sh"
+		alt="azee"
+	/>
+	<Button
+		url="https://slonk.ing/img/88x31.webp"
+		link="https://slonk.ing"
+		alt="slonk ;3"
+	/>
+	<Button
+		url="https://byeoon.dev/img/button.png"
+		link="https://byeoon.dev/"
+		alt="byeoon"
+	/>
+	<Button
+		url="/buttons/steam.gif"
+		link="steam://open/console"
+		alt="mmmfffhgggg valve,,,"
+	/>
+	<Button
+		url="/buttons/newlambda.gif"
+		link="steam://launch/70"
+		alt="hl1 is the best half life."
+	/>
+	<Button url="/buttons/hellokitty.gif" alt="haiiiii ;3" />
 </div>
 
 <script>

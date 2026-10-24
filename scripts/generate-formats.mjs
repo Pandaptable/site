@@ -4,7 +4,6 @@ import path from "node:path";
 
 const root = process.cwd();
 const genDir = path.join(root, "generated");
-const manifestPath = path.join(genDir, "manifest.json");
 const targetArg = process.argv[2] ? path.resolve(process.argv[2]) : null;
 
 // sources live in public/<folder>, generated variants in public/gen/<folder>
@@ -67,7 +66,6 @@ const getFps = (f) => {
 
 let generated = 0,
 	skipped = 0;
-const manifest = {};
 
 for (const job of jobs) {
 	const srcDir = path.join(root, job.src);
@@ -129,7 +127,11 @@ for (const job of jobs) {
 				try {
 					const fps = getFps(srcPath);
 					// running into weird random issues on host system lol
-					run("magick", [srcPath, "-coalesce", path.join(outDir, seq)]);
+					run("magick", [
+						srcPath,
+						"-coalesce",
+						path.join(outDir, seq),
+					]);
 					run("ffmpeg", [
 						"-y",
 						"-framerate",
@@ -191,7 +193,8 @@ for (const job of jobs) {
 				} catch {}
 				rm(rt);
 				for (const f of fs.readdirSync(outDir)) {
-					if (f.startsWith(`.probe-${process.pid}`)) rm(path.join(outDir, f));
+					if (f.startsWith(`.probe-${process.pid}`))
+						rm(path.join(outDir, f));
 				}
 			}
 			generated++;
@@ -235,45 +238,7 @@ for (const job of jobs) {
 				generated++;
 			}
 		}
-
-		try {
-			const [w, h, rgb] = run("magick", [
-				`${srcPath}[0]`,
-				"-format",
-				"%w %h ",
-				"-write",
-				"info:",
-				"-resize",
-				"1x1!",
-				"-format",
-				"%[fx:int(255*r)],%[fx:int(255*g)],%[fx:int(255*b)]",
-				"info:",
-			]).split(" ");
-			const hex = rgb
-				.split(",")
-				.map((n) => (+n).toString(16).padStart(2, "0"))
-				.join("");
-			manifest[`${job.out}/${base}`] = {
-				w: +w,
-				h: +h,
-				c: `#${hex}`,
-				a: animated,
-				s: ext.slice(1),
-			};
-		} catch {}
 	}
 }
 
-// formats recorded by existence, not by what this run encoded
-for (const [key, entry] of Object.entries(manifest)) {
-	const [folder, base] = key.split("/");
-	const outDir = path.join(genDir, folder);
-	const formats = new Set([entry.s]);
-	for (const e of ["avif", "webp", "jpg", "jxl", "gif", "anim"]) {
-		if (fs.existsSync(path.join(outDir, `${base}.${e}`))) formats.add(e);
-	}
-	entry.f = [...formats];
-}
-
-fs.writeFileSync(manifestPath, JSON.stringify(manifest));
 console.log(`formats: ${generated} generated, ${skipped} cached`);

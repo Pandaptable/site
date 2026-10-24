@@ -1,0 +1,38 @@
+---
+import Ad from "../ad.astro";
+---
+
+<div class="billboard-frame aspect-[12/5] lg:mt-auto relative rounded-xl border border-ctp-surface1 bg-ctp-mantle shadow-sm hover:border-ctp-mauve transition-colors overflow-hidden p-0.5">
+	<Ad src="crow.gif" link="https://vgen.co/fauxxcrow" active />
+	<Ad src="satin.gif" link="https://stasis.cc" />
+	<Ad src="teto.png" link="https://www.youtube.com/watch?v=J5SbnFwKaHc" />
+	<Ad src="youradhere.gif" />
+	<Ad src="seer.png" link="https://seer.to"/>
+</div>
+
+<style is:global>
+	.billboard {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		border-radius: 0.375rem;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.4s ease;
+	}
+
+	.billboard picture {
+		display: contents;
+	}
+
+	.billboard-on {
+		opacity: 1;
+		pointer-events: auto;
+		z-index: 1;
+	}
+</style>
+
+<script src="../../scripts/ads.ts"></script>

@@ -1,0 +1,69 @@
+---
+interface Props {
+	src: string;
+	artist?: string;
+	link?: string;
+}
+
+const { src, artist, link } = Astro.props;
+const name = src.replace(/\.[^.]+$/, "");
+const animated = /\.(gif|avif)$/i.test(src);
+const u = (e: string) => `/art/${encodeURIComponent(name)}.${e}`;
+const fallback = animated ? u("gif") : u("jpg");
+---
+
+<div class="mb-3 break-inside-avoid">
+	<button
+		type="button"
+		class="block w-full cursor-zoom-in border-0 bg-transparent p-0"
+		data-lightbox={animated ? u("jxl") : ""}
+		data-lightbox-avif={u("avif")}
+		data-lightbox-webp={u("webp")}
+		data-lightbox-jpg={fallback}
+		data-caption={name}
+		data-artist={artist ?? ""}
+		data-artist-url={link ?? ""}
+	>
+		<div class="overflow-hidden rounded-lg border border-transparent transition-colors hover:border-ctp-mauve">
+			<picture>
+				<source srcset={u("avif")} type="image/avif" />
+				{animated && <source srcset={u("jxl")} type="image/jxl" />}
+				<source srcset={u("webp")} type="image/webp" />
+				<img
+					src={fallback}
+					alt={name}
+					data-image-component
+					loading="eager"
+					decoding="async"
+					onload="this.classList.add('img-loaded')"
+					class="h-auto w-full"
+				/>
+			</picture>
+		</div>
+	</button>
+	<p class="m-0 mt-1 text-center text-xs text-ctp-subtext0">
+		{link && !artist ? (
+			<a
+				href={link}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-ctp-mauve underline decoration-ctp-mauve/40 hover:decoration-ctp-mauve"
+			>
+				{name}
+			</a>
+		) : (
+			name
+		)}
+		{artist && (
+			<a
+				href={link}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-ctp-mauve underline decoration-ctp-mauve/40 hover:decoration-ctp-mauve"
+			>
+				{" "}
+				— by {artist}
+			</a>
+		)}
+	</p>
+</div>

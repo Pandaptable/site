@@ -82,7 +82,7 @@ async function loadAniList(page: number = 1) {
 		grid.innerHTML = activities
 			.map(
 				(activity: any) => `
-				<a href="${activity.media.siteUrl}" target="_blank" rel="noopener noreferrer" class="anilist-activity">
+				<a href="${activity.media.siteUrl}" target="_blank" rel="noopener" class="anilist-activity">
 					<div class="anilist-cover" style="background-image: url(${activity.media.coverImage.medium})"></div>
 					<div class="anilist-info">
 						<span class="anilist-title">${activity.media.title.english || activity.media.title.romaji}</span>

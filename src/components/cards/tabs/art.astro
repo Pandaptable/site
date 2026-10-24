@@ -1,0 +1,47 @@
+---
+import Art from "../../art.astro";
+---
+
+<div class="gallery not-prose mx-auto w-full max-w-[42rem] columns-2 md:columns-3 gap-3">
+	<Art src="676767.avif" link="https://emotelab.app/" />
+	<Art
+		src="apple ref sheet.png"
+		artist="crow"
+		link="https://vgen.co/fauxxcrow"
+	/>
+	<Art src="ass.png" artist="crow" link="https://vgen.co/fauxxcrow" />
+	<Art src="banner.png" artist="crow" link="https://vgen.co/fauxxcrow" />
+	<Art src="human.png" artist="crow" link="https://vgen.co/fauxxcrow" />
+	<Art src="nemhappy.png" artist="crow" link="https://vgen.co/fauxxcrow" />
+	<Art src="pfp.png" artist="crow" link="https://vgen.co/fauxxcrow" />
+	<Art
+		src="presenting ass.png"
+		artist="crow"
+		link="https://vgen.co/fauxxcrow"
+	/>
+	<Art
+		src="what the fuck am i reading.png"
+		artist="crow"
+		link="https://vgen.co/fauxxcrow"
+	/>
+</div>
+
+<script>
+	const gallery = document.querySelector(".gallery");
+	if (gallery) {
+		const children = [...gallery.children];
+		for (let i = children.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[children[i], children[j]] = [children[j], children[i]];
+		}
+		children.forEach((child) => gallery.appendChild(child));
+	}
+</script>
+
+<style>
+	@media (min-width: 1024px) and (max-height: 800px) {
+		.gallery {
+			max-width: 36rem;
+		}
+	}
+</style>
