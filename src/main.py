@@ -37,9 +37,11 @@ age_task = AgeHandler()
 
 async def lifespan(_):
 	await website.login()
+	website.logged_in = True
 	age_task._age_task = asyncio.create_task(age_task.age_task())
 	logger.info("Website & API ready")
 	yield
+	website.logged_in = False
 	await website.client.close()
 	logger.info("Shut down website & API")
 
