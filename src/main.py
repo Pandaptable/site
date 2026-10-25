@@ -112,11 +112,13 @@ async def fuck_everything(request: Request, fuckery: str):
 
 	if check(fuckery):
 		return website.jinja_template.TemplateResponse(
+			request=request,
 			name="fuck.html",
 			context={"fuck": fuckery.replace("+", " ")},
 		)
 	else:
 		return website.jinja_template.TemplateResponse(
+			request=request,
 			name="error.html",
 			context={
 				"request": request,
